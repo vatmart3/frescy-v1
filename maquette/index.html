@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Maquette Frescy</title>
+<meta name="theme-color" content="#1D3FBF">
+<meta name="apple-mobile-web-app-title" content="Frescy">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
@@ -16,12 +21,14 @@
   --blue-200: #C3CCF1;
   --navy: #0E1A3A;
   --muted: #4E566C;
-  --bg: #FBFAF7;
-  --bg-deep: #F1EFE9;
-  --hover: #F6F5F1;
+  --bg: #F3F4F7;
+  --bg-deep: #E9EBF0;
+  --hover: #F6F7FA;
   --card: #FFFFFF;
-  --line: #E7E4DC;
-  --line-strong: #D2CEC3;
+  --card-line: #ECEEF3;
+  --line: #E8EAF0;
+  --line-strong: #D3D7E0;
+  --shadow: 0 1px 2px rgba(14,26,58,.04), 0 6px 20px rgba(14,26,58,.05);
   --apricot: #F2A541;
   --apricot-50: #FDF1DE;
   --apricot-line: #F1CC8F;
@@ -36,7 +43,7 @@
   --cam: #0B1022;
   --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --g: 20px;
-  --r: 16px;
+  --r: 20px;
   --r-btn: 14px;
   --t: 180ms cubic-bezier(.2,.7,.2,1);
   color-scheme: light;
@@ -111,7 +118,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focu
 .brand-word { display: inline-flex; align-items: baseline; }
 .brand-y { position: relative; display: inline-block; }
 .brand-leaf { position: absolute; top: -.12em; right: -.22em; width: .48em; height: .48em; }
-.brand-leaf path { fill: var(--blue); }
+.brand-leaf path { fill: var(--apricot); }
 .brand-leaf .vein { fill: none; stroke: #fff; stroke-width: 1; stroke-linecap: round; }
 .slogan { margin: 8px 0 0; color: var(--muted); font-size: 16px; }
 .brand-mark { width: 36px; height: 36px; border-radius: 10px; background: var(--blue); display: grid; place-items: center; flex: none; }
@@ -187,9 +194,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focu
 .device {
   position: relative; width: 390px; height: min(844px, 100%); flex: none;
   border-radius: 44px; border: 1px solid var(--line-strong); background: var(--bg);
-  overflow: hidden; box-shadow: 0 40px 80px -48px rgba(14,26,58,.35);
+  overflow: hidden; overflow: clip; box-shadow: 0 40px 80px -48px rgba(14,26,58,.35);
 }
-.app { position: absolute; inset: 10px 0 0 0; overflow: hidden; }
+.app { position: absolute; inset: 10px 0 0 0; overflow: hidden; overflow: clip; }
 .proto { width: 260px; display: flex; flex-direction: column; gap: 16px; }
 .proto h2 { margin: 0; font-size: 20px; letter-spacing: -.01em; }
 .proto p { margin: 0; color: var(--muted); font-size: 15px; }
@@ -236,8 +243,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focu
 button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .sec-h .chev { margin-left: auto; color: var(--muted); transition: transform var(--t); }
 .sec-h[aria-expanded="true"] .chev { transform: rotate(180deg); }
-.group { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
-.swipe { position: relative; overflow: hidden; transition: height var(--t), opacity var(--t); }
+.group { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; overflow: clip; }
+.swipe { position: relative; overflow: hidden; overflow: clip; transition: height var(--t), opacity var(--t); }
 .swipe + .swipe { border-top: 1px solid var(--line); }
 .swipe-actions { position: absolute; inset: 0 0 0 auto; display: flex; }
 .swipe-actions button {
@@ -250,32 +257,77 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .act-trash { background: var(--red); }
 .act-donate { background: var(--navy); }
 .row {
-  position: relative; z-index: 1; background: var(--card); min-height: 68px; padding: 0 16px;
+  position: relative; z-index: 1; background: var(--card); min-height: 72px; padding: 0 16px;
   display: flex; align-items: center; gap: 12px; touch-action: pan-y; user-select: none; -webkit-user-select: none;
   transition: transform 200ms cubic-bezier(.2,.7,.2,1), background var(--t); cursor: pointer;
 }
 .row.dragging { transition: none; }
 .row.flash { animation: flash 1.6s ease-out; }
 @keyframes flash { 0%, 35% { background: var(--blue-50); } 100% { background: var(--card); } }
-.row-left { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; }
-.row-name { font-weight: 600; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.row-qty { font-weight: 600; font-size: 16px; color: var(--muted); flex: none; font-variant-numeric: tabular-nums; }
-.row-due { flex: none; font-size: 15px; font-weight: 600; color: var(--muted); text-align: right; display: flex; align-items: center; gap: 8px; }
-.row-due.red { color: var(--red); }
-.row.featured .row-name { color: var(--muted); }
+.row-main { flex: 1; min-width: 0; padding: 12px 0; }
+.row-name { font-weight: 700; font-size: 16px; line-height: 1.25; overflow-wrap: anywhere; }
+.row-sub { font-size: 15px; color: var(--muted); margin-top: 3px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.row.done { cursor: default; }
+.row.done .row-name { color: var(--muted); }
 .empty { padding: 28px 16px; text-align: center; color: var(--muted); border: 1px dashed var(--line-strong); border-radius: var(--r); }
 
-/* Coque : vues, zone Scanner, onglets */
+/* Accueil façon landing */
+.hhead { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.hdate { font-size: 15px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.hshop { margin: 4px 0 0; font-size: 28px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; color: var(--navy); text-wrap: balance; }
+.gear { background: var(--card); box-shadow: var(--shadow); color: var(--navy); border: 1px solid var(--card-line); }
+.sumrow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sum-card { background: var(--card); border: 1px solid var(--card-line); border-radius: var(--r); box-shadow: var(--shadow); padding: 16px 18px; }
+.sum-l { font-size: 15px; color: var(--muted); font-weight: 500; }
+.sum-v { font-size: 32px; font-weight: 700; letter-spacing: -.02em; margin-top: 6px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.sum-v.green, .stat-v.green, .big.green { color: var(--green); }
+.list-h { margin: 0 0 12px; font-size: 18px; font-weight: 700; }
+.page-h { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -.02em; line-height: 1.15; }
+.page-s { margin: 4px 0 0; font-size: 15px; color: var(--muted); }
+/* Carré d'icône pastel, couleur selon le rayon */
+.isq { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; flex: none; }
+.isq .ico { width: 22px; height: 22px; stroke-width: 1.7; }
+.r-frais { background: #E7EEFD; color: #2F56C9; }
+.r-vitrine { background: #E3F4EA; color: #217A46; }
+.r-epicerie { background: #F6EEDD; color: #86601C; }
+.r-boissons { background: #EFE9FB; color: #6343B3; }
+.r-divers { background: #ECEEF2; color: #4A5265; }
+/* Pastilles d'état */
+.pill2 { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 11px; border-radius: 999px; font-size: 15px; font-weight: 600; white-space: nowrap; flex: none; }
+.pill2.xs { height: 24px; padding: 0 8px; }
+.b-jour { background: #FDEFD9; color: #774700; }
+.b-promo { background: var(--apricot); color: var(--navy); }
+.b-sold { background: var(--green-50); color: var(--green); }
+.b-retirer { background: var(--red-50); color: var(--red); }
+.b-ddm { background: #ECEEF2; color: #454D60; }
+.b-front { background: var(--blue-50); color: var(--blue); }
+.b-don { background: #E8EBF4; color: var(--navy); }
+/* Stock : recherche et filtres par rayon */
+.searchbox { position: relative; }
+.searchbox .ico { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.searchbox .input { padding-left: 46px; border-color: var(--card-line); box-shadow: var(--shadow); }
+.chiprow { display: flex; flex-wrap: wrap; gap: 8px; }
+.fchip { flex: none; min-height: 48px; padding: 0 16px; border-radius: 999px; background: var(--card); border: 1px solid var(--card-line); box-shadow: var(--shadow); font-weight: 600; font-size: 15px; color: var(--muted); }
+.fchip.on { background: var(--blue); border-color: var(--blue); color: #fff; }
+/* Promos en cours */
+.pitem { display: flex; align-items: center; gap: 12px; padding: 12px 16px; min-height: 76px; }
+.pitem + .pitem { border-top: 1px solid var(--line); }
+.pitem .open { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; text-align: left; min-height: 48px; }
+.endbtn { flex: none; min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--card); font-weight: 600; font-size: 15px; color: var(--navy); }
+.endbtn:hover { border-color: var(--muted); }
+
+/* Coque : vues, onglets */
 .views { position: relative; flex: 1; min-height: 0; }
 .view { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: opacity 140ms, visibility 0s 140ms; }
 .view.on { opacity: 1; visibility: visible; transition: opacity 140ms, visibility 0s; }
-.dock { flex: none; padding: 12px var(--g); background: var(--bg); border-top: 1px solid var(--line); }
-.dock .btn { width: 100%; min-height: 60px; font-size: 17px; border-radius: 999px; }
-.dock .btn .ico { width: 26px; height: 26px; }
-.tabbar { flex: none; height: 68px; display: grid; grid-template-columns: repeat(3, 1fr); background: var(--card); border-top: 1px solid var(--line); }
-.tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 15px; font-weight: 600; color: var(--muted); position: relative; }
+.tabbar { flex: none; height: 76px; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--card); border-top: 1px solid var(--card-line); }
+.tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 15px; font-weight: 600; color: var(--muted); position: relative; }
+.tab .ico { width: 24px; height: 24px; stroke-width: 1.6; }
 .tab.on { color: var(--blue); }
-.badge { position: absolute; top: 6px; left: calc(50% + 6px); min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 15px; font-weight: 700; display: grid; place-items: center; line-height: 1; font-variant-numeric: tabular-nums; }
+.tab-photo { color: var(--blue); }
+.tab-photo .ph { width: 52px; height: 38px; border-radius: 14px; background: var(--blue); color: #fff; display: grid; place-items: center; box-shadow: 0 6px 14px -6px rgba(29,63,191,.6); }
+.tab-photo .ph .ico { stroke-width: 1.8; }
+.badge { position: absolute; top: 6px; left: calc(50% + 4px); min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; background: var(--red); color: #fff; font-size: 15px; font-weight: 700; display: grid; place-items: center; line-height: 1; font-variant-numeric: tabular-nums; }
 
 /* Fiche produit */
 .bar { flex: none; height: 64px; display: flex; align-items: center; gap: 4px; padding: 0 8px; }
@@ -383,7 +435,7 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .sheet h2 { margin: 4px 0 0; font-size: 22px; letter-spacing: -.01em; }
 .sheet p { margin: 0; color: var(--muted); }
 .toast {
-  position: absolute; left: var(--g); right: var(--g); bottom: 168px; z-index: 30;
+  position: absolute; left: var(--g); right: var(--g); bottom: 88px; z-index: 30;
   background: var(--navy); color: #fff; border-radius: 14px; min-height: 56px; padding: 4px 4px 4px 16px;
   display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500;
   transform: translateY(12px); opacity: 0; visibility: hidden; transition: opacity var(--t), transform var(--t), visibility 0s 180ms;
@@ -391,7 +443,10 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .toast.on { transform: none; opacity: 1; visibility: visible; transition: opacity var(--t), transform var(--t), visibility 0s; }
 .toast .msg { flex: 1; min-width: 0; padding: 6px 0; }
 .toast button { min-height: 48px; padding: 0 14px; border-radius: 10px; color: #B4C1FF; font-weight: 700; font-size: 15px; }
-.app.no-dock .toast { bottom: 84px; }
+.app.on-settings .toast { bottom: 24px; }
+.tcheck { width: 26px; height: 26px; border-radius: 50%; background: #2FBF71; color: #fff; display: grid; place-items: center; flex: none; }
+.tcheck .ico { width: 16px; height: 16px; stroke-width: 2.6; }
+.dtoast .tcheck { margin-left: -4px; }
 .app.on-product .toast { bottom: 108px; }
 .app.on-scan .toast { top: 72px; bottom: auto; }
 
@@ -406,7 +461,7 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .strip-link { color: #C9D2FF; font-weight: 500; min-height: 32px; font-size: 14px; }
 .strip-link:hover { color: #fff; }
 .dapp { flex: 1; display: flex; min-height: 0; position: relative; overflow: hidden; }
-.side { flex: none; width: 256px; background: var(--card); border-right: 1px solid var(--line); display: flex; flex-direction: column; padding: 24px 16px 20px; gap: 28px; }
+.side { flex: none; width: 256px; background: var(--card); border-right: 1px solid var(--card-line); display: flex; flex-direction: column; padding: 24px 16px 20px; gap: 28px; }
 .side-head { display: flex; flex-direction: column; gap: 14px; padding: 4px 12px 0; }
 .side-head .brand { font-size: 28px; }
 .side-head .opt-t { font-size: 16px; line-height: 1.25; }
@@ -427,7 +482,7 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
 .stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); padding: 22px 24px; }
 .stat-v { font-size: 40px; font-weight: 700; letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums; }
-.stat-l { font-size: 15px; color: var(--muted); margin-top: 10px; }
+.stat-l { font-size: 15px; color: var(--muted); font-weight: 500; margin-bottom: 10px; }
 .dsec { display: flex; flex-direction: column; gap: 14px; }
 .dsec-h { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; margin: 0; }
 .dsec-h .cnt { color: var(--muted); font-weight: 600; }
@@ -442,8 +497,11 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .dt tbody tr.sel td, .dt tbody tr.sel:hover td { background: var(--blue-50); }
 .dt tbody tr.flash td { animation: flashbg 1.8s ease-out; }
 @keyframes flashbg { 0%, 35% { background: var(--blue-50); } 100% { background: transparent; } }
-.dt .pname { font-weight: 600; }
-.dt .ppack { color: var(--muted); font-size: 14px; }
+.dt .pname { font-weight: 700; }
+.pcell { display: flex; align-items: center; gap: 12px; }
+.pcell .isq { width: 40px; height: 40px; border-radius: 11px; }
+.pcell .isq .ico { width: 20px; height: 20px; }
+.dt .ppack { color: var(--muted); font-size: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin-top: 2px; }
 .due { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; white-space: nowrap; }
 .due.red { color: var(--red); }
 .due.orange { color: var(--orange-ink); }
@@ -522,6 +580,12 @@ kbd { font: 600 13px var(--font); border: 1px solid var(--line-strong); border-b
 .dtoast .msg { flex: 1; }
 .dtoast button { min-height: 40px; padding: 0 14px; border-radius: 10px; color: #B4C1FF; font-weight: 700; }
 
+/* Style de la landing : cartes blanches arrondies, ombres très légères */
+.box, .card, .group, .tile, .stat, .twrap, .dcard, .opt, .addbar, .side-foot button { border-color: var(--card-line); box-shadow: var(--shadow); border-radius: var(--r); }
+.opt.on { border-color: var(--blue); }
+.addbar { border-color: var(--blue-200); }
+.dpanel { border-left-color: var(--card-line); }
+
 @media (min-width: 1280px) {
   .dapp.panel-open .dmain { margin-right: 420px; }
   .dapp.panel-open .dinner { padding-left: 32px; padding-right: 32px; }
@@ -581,17 +645,13 @@ body[data-view="desk"] .stage { display: none; }
       <section class="layer" id="L-main">
         <div class="views">
           <div class="view" id="V-home"></div>
-          <div class="view" id="V-savings"></div>
-          <div class="view" id="V-settings"></div>
-        </div>
-        <div class="dock" id="dock">
-          <button class="btn btn-primary" data-act="scan">
-            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8v8M10.5 8v8M14 8v8M17 8v8"/></svg>
-            Scanner
-          </button>
+          <div class="view" id="V-stock"></div>
+          <div class="view" id="V-promos"></div>
+          <div class="view" id="V-bilan"></div>
         </div>
         <nav class="tabbar" id="tabbar" aria-label="Navigation"></nav>
       </section>
+      <section class="layer layer-push" id="L-settings" aria-label="Réglages"></section>
       <section class="layer layer-push" id="L-product" aria-label="Fiche produit"></section>
       <section class="layer layer-up scan" id="L-scan" aria-label="Scanner"></section>
       <section class="layer" id="L-inactive" aria-label="Abonnement inactif"></section>
@@ -664,6 +724,15 @@ body[data-view="desk"] .stage { display: none; }
     meat: '<path d="M14.5 4.5c3 0 5.5 2.4 5.5 5.6 0 4.3-4.6 8.4-9.2 8.4-2.2 0-3.3-1.3-4.6-1.3L4.3 19.1a1 1 0 0 1-1.4-1.4l2-1.9C5 14.5 4 13.4 4 11.6c0-4 5.5-7.1 10.5-7.1Z"/><circle cx="13.5" cy="10.5" r="2"/>',
     basket: '<path d="M3.5 10h17l-1.6 8.6a2 2 0 0 1-2 1.6H7.1a2 2 0 0 1-2-1.6L3.5 10Z"/><path d="M8 10l3-6M16 10l-3-6M9.5 14v2.5M14.5 14v2.5"/>',
     heart: '<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.1a4.3 4.3 0 0 1 7.5 2.7C19.5 15.4 12 20 12 20Z"/>',
+    home: '<path d="M3.5 11 12 4l8.5 7"/><path d="M5.5 9.5V20h13V9.5"/><path d="M10 20v-5h4v5"/>',
+    camera: '<path d="M4 8.5A1.5 1.5 0 0 1 5.5 7H8l1.6-2.2h4.8L16 7h2.5A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5v-9Z"/><circle cx="12" cy="12.8" r="3.4"/>',
+    gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z"/>',
+    milk: '<path d="M8.5 3h7l1.5 4.5V20a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V7.5L8.5 3Z"/><path d="M7 7.5h10M10 12.5h4"/>',
+    sandwich: '<path d="M3.5 15 12 6.5l8.5 8.5h-17Z"/><path d="M3.5 15v2.5h17V15"/><path d="M9 12.5h6"/>',
+    cake: '<path d="M4 19h16v-7.5L4 8.5V19Z"/><path d="M4 8.5 13 5l7 6.5"/><path d="M4 14h16"/>',
+    bowl: '<path d="M3.5 11h17a8.5 8.5 0 0 1-17 0Z"/><path d="M8.5 7.5c0-1.3 1-1.7 1-3M12.5 7.5c0-1.3 1-1.7 1-3"/>',
+    cookie: '<circle cx="12" cy="12" r="8.5"/><path d="M9 9h.01M14.5 8.5h.01M15 14h.01M9.5 14.5h.01M12 11.5h.01" stroke-width="2.6"/>',
+    bottle: '<path d="M10 3h4v3.2l2 2.8v11a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-2.8V3Z"/><path d="M8 13h8"/>',
     leaf: '<path d="M12 21c-4.5-2.2-7-5.7-7-10a7 7 0 0 1 14 0c0 4.3-2.5 7.8-7 10Z"/><path d="M12 21V11"/>',
   };
   const ic = (k, cls = '') => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg>`;
@@ -683,13 +752,14 @@ body[data-view="desk"] .stage { display: none; }
     { id: 'p5', name: 'Fromage frais aux herbes', pack: '150 g', cat: 'Crèmerie', d: 1, qty: 2, price: 2.60, ean: '3 523 230 031 006' },
     { id: 'p6', name: 'Sandwich thon-crudités', pack: 'Fait maison', cat: 'Snacking', d: 1, qty: 3, price: 4.20, ean: null },
     { id: 'p7', name: 'Tielle sétoise', pack: '250 g', cat: 'Traiteur', d: 2, qty: 4, price: 4.50, ean: '3 701 112 400 095' },
-    { id: 'p8', name: 'Yaourt à la grecque', pack: '4×100 g', cat: 'Crèmerie', d: 3, qty: 3, price: 2.95, ean: '3 033 491 552 870' },
+    { id: 'p8', name: 'Yaourt à la grecque', pack: '4×100 g', cat: 'Crèmerie', d: 3, qty: 3, price: 2.95, ean: '3 033 491 552 870', featured: true, promo: 20 },
     { id: 'p9', name: 'Flan nature', pack: '4×100 g', cat: 'Crèmerie', d: 3, qty: 2, price: 2.40, ean: '3 250 391 640 215' },
     { id: 'p10', name: 'Faisselle de brebis', pack: '4×100 g', cat: 'Crèmerie', d: 5, qty: 3, price: 3.80, ean: '3 760 245 810 411' },
     { id: 'p11', name: 'Jambon cru', pack: '6 tranches', cat: 'Charcuterie', d: 6, qty: 4, price: 4.90, ean: '3 266 980 202 806' },
     { id: 'p12', name: 'Fromage frais nature', pack: '500 g', cat: 'Crèmerie', d: 8, qty: 2, price: 3.10, ean: '3 523 230 011 527' },
     { id: 'p13', name: 'Yaourts aux fruits', pack: '8×125 g', cat: 'Crèmerie', d: 9, qty: 6, price: 3.60, ean: '3 033 491 118 044' },
     { id: 'p14', name: 'Zézettes de Sète', pack: '200 g', cat: 'Épicerie sucrée', d: -2, qty: 5, price: 3.90, ean: '3 770 004 512 019', dt: 'DDM' },
+    { id: 'p16', name: 'Taboulé maison', pack: '300 g', cat: 'Traiteur', d: 0, qty: 4, price: 3.50, ean: null, done: 'sold', doneToday: true },
     { id: 'p15', name: 'Jus de raisin', pack: '1 L', cat: 'Boissons', d: 2, qty: 3, price: 2.70, ean: '3 254 381 027 446', dt: 'DDM' },
   ];
   const SCAN_QUEUE = [
@@ -708,6 +778,15 @@ body[data-view="desk"] .stage { display: none; }
     month: { normal: [69, 262.4], promo: [58, 213.1], front: [29, 111.8], donated: [11, 31.4], trash: [15, 38.6] },
   };
   const SUB_PRICE = 39;
+  // Euros sauvés les 5 mois précédents (le mois en cours est calculé)
+  const PREV_MONTHS_EUR = [412.3, 468.9, 503.4, 541.0, 566.2];
+  // Rayon (emplacement en magasin) et icône selon la catégorie
+  const RAYONS = { frais: 'Rayon frais', vitrine: 'Vitrine', epicerie: 'Épicerie', boissons: 'Boissons', divers: 'Divers' };
+  const CAT_INFO = {
+    'Crèmerie': ['frais', 'milk'], 'Charcuterie': ['frais', 'meat'], 'Snacking': ['vitrine', 'sandwich'],
+    'Pâtisserie': ['vitrine', 'cake'], 'Traiteur': ['vitrine', 'bowl'], 'Épicerie sucrée': ['epicerie', 'cookie'],
+    'Boissons': ['boissons', 'bottle'], 'Divers': ['divers', 'box'],
+  };
 
   const fresh = () => ({
     logged: false,
@@ -721,7 +800,7 @@ body[data-view="desk"] .stage { display: none; }
     sub: 'active',
     products: PRODUCTS0.map(p => ({ ...p })),
     log: [],
-    laterOpen: false,
+    sq: '', srayon: '',
     productId: null,
     panelId: null,
     dq: '', dcat: '', dsort: 'asc', adding: false, addDraft: { name: '', date: '', qty: '1' }, added: 0,
@@ -731,11 +810,6 @@ body[data-view="desk"] .stage { display: none; }
 
   /* ---------- Règles métier ---------- */
   const bucketOf = d => d <= 0 ? 'now' : d <= 3 ? 'soon' : 'later';
-  const BUCKETS = [
-    { k: 'now', label: 'Maintenant', tone: 'red' },
-    { k: 'soon', label: 'Bientôt', tone: 'orange' },
-    { k: 'later', label: 'Plus tard', tone: 'green' },
-  ];
   const toneOf = d => d <= 0 ? 'red' : d <= 3 ? 'orange' : 'green';
   const dueText = d => d < 0 ? 'Périmé' : d === 0 ? 'Ce soir' : d === 1 ? 'Demain' : cap(addDays(d).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' }));
   const statusText = d => d < 0 ? (d === -1 ? 'Périmé depuis hier' : `Périmé depuis ${-d} jours`) : d === 0 ? 'Expire ce soir' : d === 1 ? 'Expire demain' : `Expire dans ${d} jours`;
@@ -751,6 +825,24 @@ body[data-view="desk"] .stage { display: none; }
     : p.d === 0 ? "DDM aujourd'hui" : p.d === 1 ? 'DDM demain' : `DDM dans ${p.d} jours`;
   const canDonateAlt = p => !isDDM(p) && p.d === 0 && !p.featured;
   const dtypeSeg = (cur, act) => `<div class="dtype" role="group" aria-label="Type de date">${['DLC', 'DDM'].map(t => `<button class="${cur === t ? 'on' : ''}" data-act="${act}" data-v="${t}" aria-pressed="${cur === t}" title="${DT_LABEL[t]}">${t}</button>`).join('')}</div>`;
+  const catInfo = p => CAT_INFO[p.cat] || CAT_INFO.Divers;
+  const rayonKey = p => catInfo(p)[0];
+  const rayonOf = p => RAYONS[rayonKey(p)];
+  const isq = p => `<span class="isq r-${rayonKey(p)}">${ic(catInfo(p)[1])}</span>`;
+  const ddmm = d => d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
+  // Pastille d'état, du plus au moins prioritaire
+  function pillOf(p) {
+    if (p.done === 'sold') return ['b-sold', 'Vendu'];
+    if (p.done === 'donate') return ['b-don', 'Donné'];
+    if (p.done === 'trash') return ['b-retirer', 'Jeté'];
+    if (p.featured) return p.promo ? ['b-promo', `${pct(p.promo)} actif`] : ['b-front', 'Devant'];
+    if (expiredDLC(p)) return ['b-retirer', 'À retirer'];
+    if (p.d < 0) return ['b-ddm', `J+${-p.d}`];
+    if (p.d === 0) return ['b-jour', 'Ce soir'];
+    return [p.d <= 3 ? 'b-jour' : 'b-ddm', `J-${p.d}`];
+  }
+  const pillHtml = p => { const [c, t] = pillOf(p); return `<span class="pill2 ${c}">${t}</span>`; };
+  const ddmBadge = p => isDDM(p) ? '<span class="pill2 xs b-ddm">DDM</span>' : '';
   const discountFor = d => d <= 0 ? 40 : d === 1 ? 30 : d <= 3 ? 20 : 0;
   const active = () => S.products.filter(p => !p.done);
   const urgent = () => active().filter(p => p.d <= 0 && !p.featured);
@@ -815,7 +907,6 @@ body[data-view="desk"] .stage { display: none; }
     const month = MONTH_EUR.slice(); month[3] += today;
     return { w, m, weekEur: sum(w, 1), weekN: sum(w, 0), monthEur: sum(m, 1), monthN: sum(m, 0), week, month };
   }
-  const weekLabels = () => [0, 1, 2, 3, 4, 5, 6].map(i => i === 6 ? 'Auj.' : cap(addDays(i - 6).toLocaleDateString('fr-FR', { weekday: 'short' })));
   const monShort = d => d.toLocaleDateString('fr-FR', { month: 'short' });
   const monthLabels = () => [0, 1, 2, 3].map(i => {
     const end = addDays(-(3 - i) * 7), st = addDays(-(3 - i) * 7 - 6);
@@ -853,7 +944,7 @@ body[data-view="desk"] .stage { display: none; }
       msg = p.promo ? `${p.name} · promo ${pct(p.promo)}` : `${p.name} · placé devant en rayon`;
     } else {
       if (kind === 'donate' && expiredDLC(p)) return { msg: `${p.name} est périmé : don impossible, retirez-le du rayon`, undo: false };
-      p.done = kind;
+      p.done = kind; p.doneToday = true;
       const value = p.qty * (kind === 'sold' ? unitPrice(p) : p.price);
       const cat = kind === 'trash' ? 'trash' : kind === 'donate' ? 'donated' : p.promo ? 'promo' : p.featured ? 'front' : 'normal';
       entry = { id, cat, n: p.qty, eur: value };
@@ -879,7 +970,7 @@ body[data-view="desk"] .stage { display: none; }
       if (v === 'phone') { $('#desk').innerHTML = ''; }
       else {
         clearTimeout(SC.timer); closeSheet();
-        ['L-login', 'V-home', 'V-savings', 'V-settings', 'L-product', 'L-scan', 'L-inactive', 'sheet'].forEach(id => { $('#' + id).innerHTML = ''; });
+        ['L-login', 'V-home', 'V-stock', 'V-promos', 'V-bilan', 'L-settings', 'L-product', 'L-scan', 'L-inactive', 'sheet'].forEach(id => { $('#' + id).innerHTML = ''; });
         $$('.layer').forEach(l => l.classList.remove('on'));
       }
     }
@@ -888,10 +979,11 @@ body[data-view="desk"] .stage { display: none; }
   }
   const route = () => curView === 'phone' ? phoneRoute() : deskRender();
   function refresh() {
-    if (curView === 'phone') { if ($('#L-product').classList.contains('on')) renderProduct(); renderMain(); }
+    if (curView === 'phone') { if ($('#L-product').classList.contains('on')) renderProduct(); if ($('#L-settings').classList.contains('on')) renderSettings(); renderMain(); }
     else deskRender();
   }
   function toast(msg, undo) { curView === 'phone' ? phoneToast(msg, undo) : deskToast(msg, undo); }
+  const tcheck = () => `<span class="tcheck">${ic('check')}</span>`;
 
   /* ---------- Connexion (partagée) ---------- */
   function authHtml(ctx) {
@@ -950,11 +1042,13 @@ body[data-view="desk"] .stage { display: none; }
 
   /* ======================= TÉLÉPHONE ======================= */
   const app = $('#app');
-  const layers = ['login', 'main', 'product', 'scan', 'inactive'];
+  const layers = ['login', 'main', 'settings', 'product', 'scan', 'inactive'];
+  const TABS = ['home', 'stock', 'promos', 'bilan'];
   function show(...on) {
     layers.forEach(k => $('#L-' + k).classList.toggle('on', on.includes(k)));
     app.classList.toggle('on-scan', on.includes('scan'));
     app.classList.toggle('on-product', on.includes('product'));
+    app.classList.toggle('on-settings', on.includes('settings') && !on.includes('product'));
     syncProto();
   }
   function phoneRoute() {
@@ -963,27 +1057,29 @@ body[data-view="desk"] .stage { display: none; }
     renderMain(); show('main');
   }
   function renderMain() {
-    renderTabbar(); renderHome(); renderSavings(); renderSettings();
-    ['home', 'savings', 'settings'].forEach(k => $('#V-' + k).classList.toggle('on', S.tab === k));
-    const noDock = S.tab === 'settings';
-    $('#dock').hidden = noDock;
-    app.classList.toggle('no-dock', noDock);
+    renderTabbar(); renderHome(); renderStock(); renderPromos(); renderBilan();
+    TABS.forEach(k => $('#V-' + k).classList.toggle('on', S.tab === k));
   }
   function renderTabbar() {
     const n = urgent().length;
-    const tabs = [{ k: 'home', label: 'À traiter', icon: 'list' }, { k: 'savings', label: 'Économies', icon: 'chart' }, { k: 'settings', label: 'Réglages', icon: 'sliders' }];
-    $('#tabbar').innerHTML = tabs.map(t => `
-      <button class="tab ${S.tab === t.k ? 'on' : ''}" data-act="tab" data-v="${t.k}" aria-current="${S.tab === t.k ? 'page' : 'false'}">
+    const tabs = [
+      { k: 'home', label: 'Accueil', icon: 'home' }, { k: 'stock', label: 'Stock', icon: 'box' },
+      { k: 'photo', label: 'Photo', icon: 'camera' },
+      { k: 'promos', label: 'Promos', icon: 'tag' }, { k: 'bilan', label: 'Bilan', icon: 'chart' },
+    ];
+    $('#tabbar').innerHTML = tabs.map(t => t.k === 'photo'
+      ? `<button class="tab tab-photo" data-act="tab" data-v="photo" aria-label="Photo : scanner un produit"><span class="ph">${ic(t.icon)}</span>${t.label}</button>`
+      : `<button class="tab ${S.tab === t.k ? 'on' : ''}" data-act="tab" data-v="${t.k}" aria-current="${S.tab === t.k ? 'page' : 'false'}">
         ${ic(t.icon)}${t.label}${t.k === 'home' && n ? `<span class="badge">${n}</span>` : ''}
       </button>`).join('');
   }
 
-  /* 1. À traiter */
-  function featureTag(p) {
-    if (!p.featured) return '';
-    return p.promo ? `<span class="tag tag-promo">${pct(p.promo)}</span>` : `<span class="tag tag-blue">${ic('up', 'ico-sm')}Devant</span>`;
-  }
+  /* Lignes de produit (accueil, stock) : glisser pour Vendu / Mis en avant / Donné / Jeté */
   function rowHtml(p) {
+    const sub = `<span>${rayonOf(p)} · ${ddmm(addDays(p.d))} · ×${p.qty}</span>${ddmBadge(p)}`;
+    if (p.done) return `
+      <div class="swipe"><div class="row done">${isq(p)}
+        <div class="row-main"><div class="row-name">${esc(p.name)}</div><div class="row-sub">${sub}</div></div>${pillHtml(p)}</div></div>`;
     const promo = featureIsPromo(p);
     return `
       <div class="swipe" data-id="${p.id}">
@@ -993,39 +1089,127 @@ body[data-view="desk"] .stage { display: none; }
           <button class="act-donate" data-act="do" data-k="donate" data-id="${p.id}" tabindex="-1">${ic('heart')}Donné</button>
           <button class="act-trash" data-act="do" data-k="trash" data-id="${p.id}" tabindex="-1">${ic('trash')}Jeté</button>
         </div>
-        <div class="row ${p.featured ? 'featured' : ''} ${p.isNew ? 'flash' : ''}" data-row="${p.id}" tabindex="0" role="button" aria-label="${esc(p.name)}, quantité ${p.qty}, ${statusTextP(p)}">
-          <span class="dot ${dueTone(p)}"></span>
-          <span class="row-left"><span class="row-name">${esc(p.name)}</span><span class="row-qty">×${p.qty}</span></span>
-          <span class="row-due ${expiredDLC(p) ? 'red' : ''}">${isDDM(p) && p.d < 0 ? '<span class="tag tag-ddm">DDM</span>' : ''}${featureTag(p)}${dueTextP(p)}</span>
+        <div class="row ${p.isNew ? 'flash' : ''}" data-row="${p.id}" tabindex="0" role="button" aria-label="${esc(p.name)}, quantité ${p.qty}, ${statusTextP(p)}">
+          ${isq(p)}
+          <div class="row-main"><div class="row-name">${esc(p.name)}</div><div class="row-sub">${sub}</div></div>
+          ${pillHtml(p)}
         </div>
       </div>`;
   }
+  const keepScroll = (sel, fn) => { const el = $(sel); const y = el ? el.scrollTop : 0; fn(); const n = $(sel); if (n) n.scrollTop = y; };
+
+  /* 1. Accueil */
   function renderHome() {
-    const list = active();
-    const u = urgent().length;
-    const showHint = !store.get('frescy.hintSeen') && list.length;
-    const banner = u
-      ? `<div class="banner"><span class="dot red"></span><span><b>${u} produit${u > 1 ? 's' : ''}</b> à traiter aujourd'hui</span></div>`
-      : `<div class="banner ok"><span class="dot green"></span><span><b>Rien d'urgent</b> aujourd'hui</span></div>`;
-    const sections = BUCKETS.map(b => {
-      const items = list.filter(p => bucketOf(p.d) === b.k).sort((a, c) => a.d - c.d || (a.featured ? 1 : 0) - (c.featured ? 1 : 0));
-      if (!items.length) return '';
-      if (b.k === 'later') return `<div class="section">
-          <button class="sec-h" data-act="later" aria-expanded="${S.laterOpen}"><span class="dot ${b.tone}"></span>${b.label}<span class="cnt">${items.length}</span>${ic('down', 'chev')}</button>
-          ${S.laterOpen ? `<div class="group">${items.map(rowHtml).join('')}</div>` : ''}</div>`;
-      return `<div class="section"><div class="sec-h"><span class="dot ${b.tone}"></span>${b.label}<span class="cnt">${items.length}</span></div>
-        <div class="group">${items.map(rowHtml).join('')}</div></div>`;
-    }).join('');
-    const prev = $('#home-scroll'); const sc = prev ? prev.scrollTop : 0;
-    $('#V-home').innerHTML = `
-      <div class="scroll" id="home-scroll"><div class="page">
-        <header><div class="top-sub">${esc(S.shop.name)}</div><h1 class="h1">${fmtLong(TODAY)}</h1></header>
-        ${banner}
-        ${showHint ? `<div class="hint">${ic('info')}<span>Glissez une ligne vers la gauche pour la marquer Vendu, Mis en avant, Donné ou Jeté.</span><button data-act="hint" aria-label="Compris, masquer l'astuce">${ic('x')}</button></div>` : ''}
-        ${sections || `<div class="empty">Aucun produit suivi.<br>Appuyez sur Scanner pour ajouter le premier.</div>`}
-      </div></div>`;
-    $('#home-scroll').scrollTop = sc;
+    const s = savings();
+    const toWatch = active().filter(p => p.d <= 3 && !p.featured).length;
+    const soon = S.products.filter(p => (!p.done && p.d <= 3) || (p.done && p.doneToday))
+      .sort((a, b) => (a.done ? 1 : 0) - (b.done ? 1 : 0) || a.d - b.d);
+    const showHint = !store.get('frescy.hintSeen') && soon.some(p => !p.done);
+    keepScroll('#home-scroll', () => {
+      $('#V-home').innerHTML = `
+        <div class="scroll" id="home-scroll"><div class="page">
+          <header class="hhead">
+            <div><div class="hdate">${TODAY.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</div><h1 class="hshop">${esc(S.shop.name)}</h1></div>
+            <button class="icon-btn gear" data-act="settings" aria-label="Réglages">${ic('gear')}</button>
+          </header>
+          <div class="sumrow">
+            <div class="sum-card"><div class="sum-l">À surveiller</div><div class="sum-v">${toWatch}</div></div>
+            <div class="sum-card"><div class="sum-l">Sauvé ce mois</div><div class="sum-v green">${eur0(s.monthEur)}</div></div>
+          </div>
+          ${showHint ? `<div class="hint">${ic('info')}<span>Glissez une ligne vers la gauche pour la marquer Vendu, Mis en avant, Donné ou Jeté.</span><button data-act="hint" aria-label="Compris, masquer l'astuce">${ic('x')}</button></div>` : ''}
+          <section>
+            <h2 class="list-h">Expire bientôt</h2>
+            ${soon.length ? `<div class="group">${soon.map(rowHtml).join('')}</div>` : `<div class="empty">Rien n'expire dans les 3 jours.</div>`}
+          </section>
+        </div></div>`;
+    });
     S.products.forEach(p => { delete p.isNew; });
+  }
+
+  /* 2. Stock : tous les produits, recherche, filtre par rayon */
+  function stockItems() {
+    const q = S.sq.trim().toLowerCase();
+    return active().filter(p => !S.srayon || rayonKey(p) === S.srayon).filter(p => !q || p.name.toLowerCase().includes(q)).sort((a, b) => a.d - b.d);
+  }
+  function stockList() {
+    const items = stockItems();
+    return items.length ? `<div class="group">${items.map(rowHtml).join('')}</div>` : `<div class="empty">Aucun produit ne correspond.</div>`;
+  }
+  function renderStock() {
+    const used = [...new Set(active().map(rayonKey))];
+    const keys = Object.keys(RAYONS).filter(k => used.includes(k));
+    keepScroll('#stock-scroll', () => {
+      $('#V-stock').innerHTML = `
+        <div class="scroll" id="stock-scroll"><div class="page">
+          <div><h1 class="page-h">Stock</h1><p class="page-s" id="stock-count">${active().length} produits suivis</p></div>
+          <label class="searchbox">${ic('search')}<input class="input" id="m-q" type="search" placeholder="Rechercher un produit" value="${esc(S.sq)}" aria-label="Rechercher un produit" autocomplete="off"></label>
+          <div class="chiprow" role="group" aria-label="Filtrer par rayon">
+            <button class="fchip ${!S.srayon ? 'on' : ''}" data-act="rayon" data-v="">Tous</button>
+            ${keys.map(k => `<button class="fchip ${S.srayon === k ? 'on' : ''}" data-act="rayon" data-v="${k}">${RAYONS[k]}</button>`).join('')}
+          </div>
+          <div id="stock-list">${stockList()}</div>
+        </div></div>`;
+    });
+  }
+
+  /* 3. Promos et mises en avant en cours */
+  function renderPromos() {
+    const items = active().filter(p => p.featured).sort((a, b) => a.d - b.d);
+    $('#V-promos').innerHTML = `
+      <div class="scroll"><div class="page">
+        <div><h1 class="page-h">Promos</h1><p class="page-s">Promos et mises en avant en cours</p></div>
+        ${items.length ? `<div class="group">${items.map(p => `
+          <div class="pitem">
+            <button class="open" data-act="open-p" data-id="${p.id}" aria-label="Ouvrir la fiche ${esc(p.name)}">${isq(p)}
+              <span class="row-main"><span class="row-name" style="display:block">${esc(p.name)}</span>
+              <span class="row-sub">${pillHtml(p)}<span>${p.promo ? `${eur(unitPrice(p))} au lieu de ${eur(p.price)}` : rayonOf(p)}</span></span></span></button>
+            <button class="endbtn" data-act="end-promo" data-id="${p.id}">Terminer</button>
+          </div>`).join('')}</div>`
+        : `<div class="empty">Aucune promo en cours.<br>Les promos et mises en avant que vous appliquez apparaissent ici.</div>`}
+      </div></div>`;
+  }
+  function endPromo(id) {
+    const p = find(id); if (!p) return;
+    const before = { ...p };
+    p.featured = false; p.promo = 0;
+    lastUndo = () => { Object.assign(p, before); refresh(); };
+    renderMain();
+    phoneToast(before.promo ? `Promo terminée · ${p.name}` : `Mise en avant terminée · ${p.name}`, true);
+  }
+
+  /* 4. Bilan : euros sauvés, graphique par mois */
+  const monthsLabels = () => [5, 4, 3, 2, 1, 0].map(i => cap(new Date(TODAY.getFullYear(), TODAY.getMonth() - i, 1).toLocaleDateString('fr-FR', { month: 'short' })));
+  function renderBilan() {
+    const s = savings();
+    $('#V-bilan').innerHTML = `
+      <div class="scroll"><div class="page">
+        <h1 class="page-h">Bilan</h1>
+        <div>
+          <div class="big green">${eur0(s.monthEur)}</div>
+          <div class="big-l">sauvés ce mois-ci</div>
+          <div class="big-s">Soit ${times(s.monthEur / SUB_PRICE)}× le prix de l'abonnement.</div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-t">Par mois</span><span class="card-s">en euros</span></div>
+          ${chartSvg([...PREV_MONTHS_EUR, s.monthEur], monthsLabels(), { w: 320, h: 210, f: 16, bar: 30, label: 'Euros sauvés par mois' })}
+        </div>
+        <button class="link" data-act="bilan-detail" style="align-self:flex-start">Voir le détail${ic('right', 'ico-sm')}</button>
+      </div></div>`;
+  }
+  function bilanDetailSheet() {
+    const s = savings();
+    const r = (k, l) => `<div class="box-row"><span class="kv-l">${l}</span><span class="kv-v">${s.m[k][0]} · ${eur(s.m[k][1])}</span></div>`;
+    openSheet(`
+      <div class="grab"></div>
+      <h2>Détail du mois</h2>
+      <div class="box">
+        <div class="box-row"><span class="kv-l">Produits sauvés</span><span class="kv-v">${s.monthN}</span></div>
+        ${r('normal', 'Vendus au prix normal')}${r('promo', 'Vendus en promo')}${r('front', 'Mis en avant puis vendus')}
+        <div class="box-row"><span class="kv-l">Donnés</span><span class="kv-v">${s.m.donated[0]} produit${s.m.donated[0] > 1 ? 's' : ''}</span></div>
+        <div class="box-row"><span class="kv-l">Jetés (perte)</span><span class="kv-v" style="color:var(--red)">${s.m.trash[0]} · −${eur(s.m.trash[1])}</span></div>
+      </div>
+      <div class="box"><div class="box-row"><span class="kv-l">Cette semaine</span><span class="kv-v">${eur0(s.weekEur)} · ${s.weekN} produits</span></div></div>
+      <button class="btn btn-ghost btn-block" data-act="sheet-close">Fermer</button>`);
   }
   const hintSeen = () => { if (!store.get('frescy.hintSeen')) store.set('frescy.hintSeen', '1'); };
 
@@ -1034,9 +1218,9 @@ body[data-view="desk"] .stage { display: none; }
   let drag = null, openRow = null;
   const setX = (row, x) => { row.style.transform = x ? `translateX(${x}px)` : ''; };
   const closeOpen = () => { if (openRow) { setX(openRow, 0); openRow = null; } };
-  const home = $('#V-home');
+  const home = $('#L-main .views');
   home.addEventListener('pointerdown', e => {
-    const row = e.target.closest('.row');
+    const row = e.target.closest('.row[data-row]');
     if (!row || (e.pointerType === 'mouse' && e.button !== 0)) return;
     drag = { row, id: e.pointerId, x0: e.clientX, y0: e.clientY, base: row === openRow ? -ACT_W : 0, x: row === openRow ? -ACT_W : 0, active: false };
   });
@@ -1070,25 +1254,25 @@ body[data-view="desk"] .stage { display: none; }
   home.addEventListener('pointerup', e => endDrag(e, false));
   home.addEventListener('pointercancel', e => endDrag(e, true));
   home.addEventListener('keydown', e => {
-    const row = e.target.closest('.row');
+    const row = e.target.closest('.row[data-row]');
     if (row && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openProduct(row.dataset.row); }
   });
   function nudgeFirstRow() {
-    const row = $('#V-home .row');
+    const row = $('#V-home .row[data-row]');
     if (!row || store.get('frescy.hintSeen')) return;
     setTimeout(() => { setX(row, -100); setTimeout(() => setX(row, 0), 650); }, 450);
   }
   function phoneAct(id, kind, fromProduct) {
     const res = applyAction(id, kind);
     if (!res) return;
-    if (!res.undo) { closeOpen(); phoneToast(res.msg); return; }
+    if (!res.undo) { closeOpen(); phoneToast(res.msg, false); return; }
     hintSeen();
     const done = () => { openRow = null; renderMain(); phoneToast(res.msg, res.undo); };
     if (fromProduct) {
       if (kind === 'feature') { renderProduct(); renderMain(); phoneToast(res.msg, res.undo); return; }
       show('main'); done(); return;
     }
-    const wrap = $(`.swipe[data-id="${id}"]`);
+    const wrap = $(`#V-${S.tab} .swipe[data-id="${id}"]`);
     if (wrap && kind !== 'feature') {
       wrap.style.height = wrap.offsetHeight + 'px';
       requestAnimationFrame(() => { wrap.style.height = '0px'; wrap.style.opacity = '0'; });
@@ -1154,8 +1338,9 @@ body[data-view="desk"] .stage { display: none; }
     clearTimeout(SC.timer);
     if (SC.added) S.tab = 'home';
     renderMain(); show('main');
-    const fr = $('#V-home .row.flash');
-    if (fr) fr.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    // Fait défiler la liste seule (scrollIntoView déplacerait aussi la coque de l'app)
+    const fr = $('#V-home .row.flash'), sc = $('#home-scroll');
+    if (fr && sc) sc.scrollTo({ top: Math.max(0, fr.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - sc.clientHeight / 2), behavior: 'smooth' });
   }
   function startAim(first) {
     clearTimeout(SC.timer);
@@ -1248,40 +1433,6 @@ body[data-view="desk"] .stage { display: none; }
     else closeScan();
   }
 
-  /* 5. Économies */
-  function renderSavings() {
-    const s = savings();
-    $('#V-savings').innerHTML = `
-      <div class="scroll"><div class="page">
-        <h1 class="h1">Économies</h1>
-        <div>
-          <div class="big">${eur0(s.weekEur)}</div>
-          <div class="big-l">récupérés cette semaine</div>
-          <div class="big-s">Soit ${times(s.weekEur / SUB_PRICE)}× le prix de l'abonnement.</div>
-        </div>
-        <div class="card">
-          <div class="card-h"><span class="card-t">Par jour</span><span class="card-s">en euros</span></div>
-          ${chartSvg(s.week, weekLabels(), { w: 320, h: 210, f: 16, bar: 30, label: 'Euros récupérés par jour' })}
-        </div>
-        <button class="link" data-act="sav-detail" style="align-self:flex-start">Voir le détail${ic('right', 'ico-sm')}</button>
-      </div></div>`;
-  }
-  function savDetailSheet() {
-    const s = savings();
-    const r = (k, l) => `<div class="box-row"><span class="kv-l">${l}</span><span class="kv-v">${s.w[k][0]} · ${eur(s.w[k][1])}</span></div>`;
-    openSheet(`
-      <div class="grab"></div>
-      <h2>Détail de la semaine</h2>
-      <div class="box">
-        <div class="box-row"><span class="kv-l">Produits sauvés</span><span class="kv-v">${s.weekN}</span></div>
-        ${r('normal', 'Vendus au prix normal')}${r('promo', 'Vendus en promo')}${r('front', 'Mis en avant puis vendus')}
-        <div class="box-row"><span class="kv-l">Donnés</span><span class="kv-v">${s.w.donated[0]} produit${s.w.donated[0] > 1 ? 's' : ''}</span></div>
-        <div class="box-row"><span class="kv-l">Jetés (perte)</span><span class="kv-v" style="color:var(--red)">${s.w.trash[0]} · −${eur(s.w.trash[1])}</span></div>
-      </div>
-      <div class="box"><div class="box-row"><span class="kv-l">Ce mois-ci</span><span class="kv-v">${eur0(s.monthEur)} · ${s.monthN} produits</span></div></div>
-      <button class="btn btn-ghost btn-block" data-act="sheet-close">Fermer</button>`);
-  }
-
   /* 6. Réglages (blocs partagés) */
   const MODES = [
     { k: 'promo', t: 'Promo', s: 'Une remise selon la date.' },
@@ -1308,14 +1459,14 @@ body[data-view="desk"] .stage { display: none; }
         </div></div>`;
   }
   function renderSettings() {
-    const prev = $('#V-settings .scroll'); const sc = prev ? prev.scrollTop : 0;
-    $('#V-settings').innerHTML = `
-      <div class="scroll"><div class="page" style="gap:0">
-        <h1 class="h1" style="margin-bottom:24px">Réglages</h1>
-        ${settingsBlocks()}
-        <button class="btn btn-ghost btn-block" data-act="logout" style="margin-top:32px">Se déconnecter</button>
-      </div></div>`;
-    $('#V-settings .scroll').scrollTop = sc;
+    keepScroll('#settings-scroll', () => {
+      $('#L-settings').innerHTML = `
+        <div class="bar"><button class="icon-btn" data-act="close-settings" aria-label="Retour">${ic('back')}</button><span class="bar-title">Réglages</span></div>
+        <div class="scroll" id="settings-scroll"><div class="page" style="gap:0;padding-top:4px">
+          ${settingsBlocks()}
+          <button class="btn btn-ghost btn-block" data-act="logout" style="margin-top:32px">Se déconnecter</button>
+        </div></div>`;
+    });
   }
   function manageHtml(step, ctx) {
     const phone = ctx === 'phone';
@@ -1343,20 +1494,21 @@ body[data-view="desk"] .stage { display: none; }
   let toastT = 0;
   function phoneToast(msg, undo) {
     const t = $('#toast');
-    t.innerHTML = `<span class="msg">${esc(msg)}</span>${undo ? '<button data-act="undo">Annuler</button>' : ''}`;
+    t.innerHTML = `${undo !== false ? tcheck() : ''}<span class="msg">${esc(msg)}</span>${undo ? '<button data-act="undo">Annuler</button>' : ''}`;
     t.classList.add('on');
     clearTimeout(toastT);
     toastT = setTimeout(() => t.classList.remove('on'), undo ? 4000 : 2200);
   }
 
   /* Panneau maquette (téléphone sur grand écran) */
-  const SCREENS = [['login', 'Connexion'], ['home', 'À traiter'], ['scan', 'Scan'], ['product', 'Fiche produit'], ['savings', 'Économies'], ['settings', 'Réglages'], ['inactive', 'Abonnement inactif']];
+  const SCREENS = [['login', 'Connexion'], ['home', 'Accueil'], ['stock', 'Stock'], ['scan', 'Photo (scan)'], ['product', 'Fiche produit'], ['promos', 'Promos'], ['bilan', 'Bilan'], ['settings', 'Réglages'], ['inactive', 'Abonnement inactif']];
   function currentScreen() {
     const on = k => $('#L-' + k).classList.contains('on');
     if (on('login')) return 'login';
     if (on('inactive')) return 'inactive';
     if (on('scan')) return 'scan';
     if (on('product')) return 'product';
+    if (on('settings')) return 'settings';
     return S.tab;
   }
   function syncProto() {
@@ -1436,7 +1588,7 @@ body[data-view="desk"] .stage { display: none; }
     const alt = canDonateAlt(p) ? `<button class="tbtn-link" data-act="ddo" data-k="donate" data-id="${p.id}">ou donner</button>` : '';
     return `<div class="acell"><button class="tbtn apply ${promo ? 'promo' : ''}" data-act="ddo" data-k="feature" data-id="${p.id}" title="Appliquer : ${label}">${ic(promo ? 'tag' : 'up', 'ico-sm')}${label}</button>${alt}</div>`;
   }
-  const dueCell = (p, rel) => `<span class="due ${dueTone(p)}"><span class="dot ${dueTone(p)}"></span>${p.d <= 1 ? dueTextP(p) : rel ? `Dans ${p.d} j` : fmtShort(addDays(p.d))}</span>`;
+  const pcell = (p, extra) => `<div class="pcell">${isq(p)}<div><div class="pname">${esc(p.name)}</div><div class="ppack"><span>${extra}</span>${ddmBadge(p)}</div></div></div>`;
 
   /* 1. À traiter */
   function todoPage() {
@@ -1446,9 +1598,9 @@ body[data-view="desk"] .stage { display: none; }
       <div class="twrap"><table class="dt">
         <thead><tr><th>Produit</th><th class="r">Quantité</th><th>Échéance</th><th>Action conseillée</th><th class="r">Marquer comme</th></tr></thead>
         <tbody>${items.map(p => `<tr class="click ${S.panelId === p.id ? 'sel' : ''}" data-open="${p.id}">
-          <td><div class="pname">${esc(p.name)}</div><div class="ppack">${esc(p.pack || '')}${isDDM(p) ? ' <span class="tag tag-ddm">DDM</span>' : ''}</div></td>
+          <td>${pcell(p, `${rayonOf(p)} · ${ddmm(addDays(p.d))}`)}</td>
           <td class="r num"><b>${p.qty}</b></td>
-          <td>${dueCell(p)}</td>
+          <td>${pillHtml(p)}</td>
           <td>${actionCell(p)}</td>
           <td>${actBtns(p)}</td></tr>`).join('')}</tbody>
       </table></div>`;
@@ -1461,9 +1613,9 @@ body[data-view="desk"] .stage { display: none; }
     return `
       <div class="dhead"><div><h1>À traiter</h1><div class="sub">${fmtLong(TODAY)} · ${esc(S.shop.name)}</div></div></div>
       <div class="stats">
-        <div class="stat"><div class="stat-v" style="color:${u ? 'var(--red)' : 'var(--green)'}">${u}</div><div class="stat-l">à traiter aujourd'hui</div></div>
-        <div class="stat"><div class="stat-v" style="color:var(--orange-ink)">${watch().length}</div><div class="stat-l">à surveiller cette semaine</div></div>
-        <div class="stat"><div class="stat-v" style="color:var(--blue)">${eur0(s.monthEur)}</div><div class="stat-l">récupérés ce mois-ci</div></div>
+        <div class="stat"><div class="stat-l">À traiter aujourd'hui</div><div class="stat-v" style="color:${u ? 'var(--red)' : 'var(--green)'}">${u}</div></div>
+        <div class="stat"><div class="stat-l">À surveiller cette semaine</div><div class="stat-v">${watch().length}</div></div>
+        <div class="stat"><div class="stat-l">Sauvé ce mois</div><div class="stat-v green">${eur0(s.monthEur)}</div></div>
       </div>
       ${sec('now', 'Maintenant', 'red')}
       ${sec('soon', 'Bientôt', 'orange')}`;
@@ -1482,12 +1634,12 @@ body[data-view="desk"] .stage { display: none; }
     const rows = filtered();
     if (!rows.length) return `<tr><td colspan="7" class="muted" style="padding:28px 16px;text-align:center">Aucun produit ne correspond.</td></tr>`;
     return rows.map(p => `<tr class="click ${S.panelId === p.id ? 'sel' : ''} ${p.isNew ? 'flash' : ''}" data-open="${p.id}">
-      <td><div class="pname">${esc(p.name)}</div><div class="ppack">${esc(p.pack || '')}</div></td>
+      <td>${pcell(p, `${rayonOf(p)}${p.pack ? ' · ' + esc(p.pack) : ''}`)}</td>
       <td><span class="tag tag-${dtOf(p).toLowerCase()}" title="${DT_LABEL[dtOf(p)]}">${dtOf(p)}</span></td>
       <td class="opt-col">${esc(p.cat)}</td>
       <td class="r num"><b>${p.qty}</b></td>
       <td class="num">${fmtShort(addDays(p.d))}</td>
-      <td>${dueCell(p, true)}</td>
+      <td>${pillHtml(p)}</td>
       <td class="r num opt-col">${p.promo ? `<span class="price-old">${eur(p.price)}</span>` : ''}${eur(unitPrice(p))}</td></tr>`).join('');
   }
   function addPreview() {
@@ -1566,7 +1718,7 @@ body[data-view="desk"] .stage { display: none; }
     return `
       <div class="bar"><span class="bar-title">Fiche produit</span><button class="icon-btn" data-act="dclose" aria-label="Fermer la fiche">${ic('x')}</button></div>
       <div class="dpanel-body">
-        <div><div class="opt-s" style="margin:0 0 4px">${esc(p.cat)}${p.pack ? ' · ' + esc(p.pack) : ''}</div><h2 class="p-name">${esc(p.name)}</h2>
+        <div><div class="pcell" style="margin-bottom:12px">${isq(p)}<div class="opt-s" style="margin:0">${rayonOf(p)} · ${esc(p.cat)}${p.pack ? ' · ' + esc(p.pack) : ''}</div></div><h2 class="p-name">${esc(p.name)}</h2>
           <div class="p-meta"><span class="status ${tone}"><span class="dot ${tone}"></span>${statusTextP(p)}</span>${dtypeSeg(dtOf(p), 'set-dt')}</div></div>
         <div class="dgrid2">
           <label class="dfield"><span>${DT_LABEL[dtOf(p)]}</span><input class="input" type="date" id="dp-date" value="${iso(addDays(p.d))}"></label>
@@ -1594,8 +1746,8 @@ body[data-view="desk"] .stage { display: none; }
       <div class="dhead"><div><h1>Économies</h1><div class="sub">4 dernières semaines</div></div>
         <button class="btn btn-ghost" data-act="dexport" style="min-height:48px">${ic('download')}Exporter en PDF</button></div>
       <div>
-        <div class="big" style="font-size:72px">${eur0(s.monthEur)}</div>
-        <div class="big-l">récupérés ce mois-ci</div>
+        <div class="big green" style="font-size:72px">${eur0(s.monthEur)}</div>
+        <div class="big-l">sauvés ce mois-ci</div>
         <div class="big-s">Soit ${times(s.monthEur / SUB_PRICE)}× le prix de l'abonnement · ${s.monthN} produits sauvés.</div>
       </div>
       <div class="card" style="padding:28px">
@@ -1644,7 +1796,7 @@ body[data-view="desk"] .stage { display: none; }
   let dToastT = 0;
   function deskToast(msg, undo) {
     const t = $('#dtoast'); if (!t) return;
-    t.innerHTML = `<span class="msg">${esc(msg)}</span>${undo ? '<button data-act="undo">Annuler</button>' : ''}`;
+    t.innerHTML = `${undo !== false ? tcheck() : ''}<span class="msg">${esc(msg)}</span>${undo ? '<button data-act="undo">Annuler</button>' : ''}`;
     t.classList.add('on');
     clearTimeout(dToastT);
     dToastT = setTimeout(() => t.classList.remove('on'), undo ? 4500 : 2600);
@@ -1652,7 +1804,7 @@ body[data-view="desk"] .stage { display: none; }
   function deskAct(id, kind) {
     const res = applyAction(id, kind);
     if (!res) return;
-    if (!res.undo) { deskToast(res.msg); return; }
+    if (!res.undo) { deskToast(res.msg, false); return; }
     if (kind !== 'feature' && S.panelId === id) S.panelId = null;
     deskRender();
     deskToast(res.msg, res.undo);
@@ -1674,16 +1826,21 @@ body[data-view="desk"] .stage { display: none; }
       case 'step-back': { const f = $('form[data-form]'); if (f) readAuthForm(f); S.step = 1; route(); break; }
       case 'stype': { const f = $('form[data-form]'); if (f) readAuthForm(f); S.draft.type = v; route(); break; }
       case 'tab': {
+        if (v === 'photo') { openScan(); break; }
         closeOpen(); S.tab = v; renderMain();
         const sc = $('#V-' + v + ' .scroll'); if (sc) sc.scrollTop = 0;
         if (v !== 'home') hintSeen();
         syncProto(); break;
       }
       case 'hint': hintSeen(); renderHome(); break;
-      case 'later': S.laterOpen = !S.laterOpen; renderHome(); break;
+      case 'settings': closeOpen(); renderSettings(); show('main', 'settings'); break;
+      case 'close-settings': show('main'); break;
+      case 'rayon': S.srayon = v; renderStock(); break;
+      case 'open-p': openProduct(b.dataset.id); break;
+      case 'end-promo': endPromo(b.dataset.id); break;
       case 'do': phoneAct(b.dataset.id, b.dataset.k); break;
       case 'do-p': phoneAct(b.dataset.id || S.productId, b.dataset.k, true); break;
-      case 'close-product': renderMain(); show('main'); break;
+      case 'close-product': renderMain(); show(...($('#L-settings').classList.contains('on') ? ['main', 'settings'] : ['main'])); break;
       case 'pqty': { const p = find(S.productId); p.qty = Math.max(1, p.qty + +v); renderProduct(); break; }
       case 'details': { const p = find(S.productId); openSheet(`<div class="grab"></div><h2>Détails</h2><div class="box">${detailsKv(p)}</div><button class="btn btn-ghost btn-block" data-act="sheet-close">Fermer</button>`); break; }
       case 'scan': openScan(); break;
@@ -1696,7 +1853,7 @@ body[data-view="desk"] .stage { display: none; }
       case 's-editdate': SC.editDate = true; renderScanSheet(); break;
       case 's-qty': SC.qty = Math.max(1, SC.qty + +v); $('#s-qty').textContent = SC.qty; break;
       case 's-ok': scanValidate(); break;
-      case 'sav-detail': savDetailSheet(); break;
+      case 'bilan-detail': bilanDetailSheet(); break;
       case 'mode': S.mode = v; refresh(); toast(v === 'promo' ? 'Mode promo activé' : v === 'rotation' ? 'Mode rotation activé' : 'Promo et rotation activées'); break;
       case 'alert': {
         const [h, m] = S.alert.split(':').map(Number);
@@ -1732,6 +1889,7 @@ body[data-view="desk"] .stage { display: none; }
   document.addEventListener('input', e => {
     const t = e.target;
     if (t.id === 's-name') SC.name = t.value;
+    if (t.id === 'm-q') { S.sq = t.value; $('#stock-list').innerHTML = stockList(); }
     if (t.id === 'd-q') { S.dq = t.value; $('#d-tbody').innerHTML = prodRows(); $('#d-count').textContent = countText(); }
     if (t.id === 'a-name') S.addDraft.name = t.value;
     if (t.id === 'a-qty') S.addDraft.qty = t.value;
@@ -1766,6 +1924,7 @@ body[data-view="desk"] .stage { display: none; }
       if ($('#sheet').classList.contains('on')) closeSheet();
       else if ($('#L-product').classList.contains('on')) { renderMain(); show('main'); }
       else if ($('#L-scan').classList.contains('on')) closeScan();
+      else if ($('#L-settings').classList.contains('on')) show('main');
       return;
     }
     const mb = $('#dmodal-back');
@@ -1783,8 +1942,9 @@ body[data-view="desk"] .stage { display: none; }
     S.logged = true;
     if (k === 'inactive') { S.sub = 'inactive'; route(); return; }
     S.sub = 'active';
-    if (['home', 'savings', 'settings'].includes(k)) { S.tab = k; route(); return; }
-    S.tab = 'home'; renderMain();
+    if (TABS.includes(k)) { S.tab = k; route(); return; }
+    S.tab = 'home'; route();
+    if (k === 'settings') { renderSettings(); show('main', 'settings'); }
     if (k === 'scan') openScan();
     if (k === 'product') openProduct((active().find(p => p.d === 1) || active()[0]).id);
   }
