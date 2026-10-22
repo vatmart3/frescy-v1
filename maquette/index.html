@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Maquette Dalia</title>
+<title>Maquette Frescy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
@@ -108,6 +108,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focu
 .pill.ok { background: var(--green-50); color: var(--green); }
 .pill.off { background: var(--red-50); color: var(--red); }
 .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 24px; letter-spacing: -.02em; }
+.brand-word { display: inline-flex; align-items: baseline; }
+.brand-y { position: relative; display: inline-block; }
+.brand-leaf { position: absolute; top: -.12em; right: -.22em; width: .48em; height: .48em; }
+.brand-leaf path { fill: var(--blue); }
+.brand-leaf .vein { fill: none; stroke: #fff; stroke-width: 1; stroke-linecap: round; }
+.slogan { margin: 8px 0 0; color: var(--muted); font-size: 16px; }
 .brand-mark { width: 36px; height: 36px; border-radius: 10px; background: var(--blue); display: grid; place-items: center; flex: none; }
 .brand-mark svg { width: 20px; height: 20px; stroke: #fff; }
 .price-old { text-decoration: line-through; opacity: .65; font-weight: 500; margin-right: 6px; }
@@ -535,7 +541,7 @@ body[data-view="desk"] .stage { display: none; }
 <!-- ===== Vue téléphone ===== -->
 <div class="stage">
   <aside class="proto" aria-label="Navigation de la maquette">
-    <div class="brand"><span class="brand-mark"><svg class="ico" viewBox="0 0 24 24"><path d="M12 21c-4.5-2.2-7-5.7-7-10a7 7 0 0 1 14 0c0 4.3-2.5 7.8-7 10Z"/><path d="M12 21V11"/></svg></span>Dalia</div>
+    <div class="brand" role="img" aria-label="Frescy"><span class="brand-word" aria-hidden="true">Fresc<span class="brand-y">y<svg class="brand-leaf" viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 10.5C1.5 5.2 4.8 1.8 10.8 1.2 10.8 7.2 7.4 10.5 1.5 10.5Z"/><path d="M1.5 10.5 7.5 4.5" class="vein"/></svg></span></span></div>
     <h2>Maquette</h2>
     <div class="seg" role="group" aria-label="Type de vue">
       <button data-act="view" data-v="phone">Téléphone</button>
@@ -746,7 +752,7 @@ body[data-view="desk"] .stage { display: none; }
       <div class="reco remove"><div class="reco-head"><span class="reco-ico">${ic('trash')}</span><div><div class="reco-k">Action conseillée</div><div class="reco-t">Retirer du rayon</div><div class="reco-s">La date limite est dépassée.</div></div></div>
       <button class="btn btn-red btn-block" data-act="${go}" data-k="trash" data-id="${p.id}">Marquer comme jeté</button></div>`;
     if (r.kind === 'wait') return `
-      <div class="reco wait"><div class="reco-head"><span class="reco-ico">${ic('bell')}</span><div><div class="reco-k">Action conseillée</div><div class="reco-t">Rien à faire pour l'instant</div><div class="reco-s">Dalia vous préviendra le ${fmtShort(addDays(p.d - 3)).toLowerCase()}.</div></div></div></div>`;
+      <div class="reco wait"><div class="reco-head"><span class="reco-ico">${ic('bell')}</span><div><div class="reco-k">Action conseillée</div><div class="reco-t">Rien à faire pour l'instant</div><div class="reco-s">Frescy vous préviendra le ${fmtShort(addDays(p.d - 3)).toLowerCase()}.</div></div></div></div>`;
     const promo = r.kind === 'promo';
     const done = p.featured
       ? `<div class="reco-done">${ic('check')}${p.promo ? `Promo ${pct(p.promo)} en place` : 'Placé devant en rayon'}</div>`
@@ -848,7 +854,7 @@ body[data-view="desk"] .stage { display: none; }
   /* ---------- Connexion (partagée) ---------- */
   function authHtml(ctx) {
     const d = S.draft;
-    const brand = `<div class="brand"><span class="brand-mark">${ic('leaf')}</span>Dalia</div>`;
+    const brand = `<div><div class="brand" role="img" aria-label="Frescy"><span class="brand-word" aria-hidden="true">Fresc<span class="brand-y">y<svg class="brand-leaf" viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 10.5C1.5 5.2 4.8 1.8 10.8 1.2 10.8 7.2 7.4 10.5 1.5 10.5Z"/><path d="M1.5 10.5 7.5 4.5" class="vein"/></svg></span></span></div><p class="slogan">Avec Frescy, rien ne se perd.</p></div>`;
     if (S.auth === 'login') return `
       <div class="auth">${brand}
         <div><h1>Bon retour</h1><p class="lead">Connectez-vous à votre commerce.</p></div>
@@ -887,9 +893,9 @@ body[data-view="desk"] .stage { display: none; }
     return `
       <div class="locked">
         <div class="lock">${ic('lock', 'ico-lg')}</div>
-        <div><span class="pill off">Abonnement inactif</span><h1 style="margin-top:14px">L'accès à Dalia est suspendu</h1></div>
+        <div><span class="pill off">Abonnement inactif</span><h1 style="margin-top:14px">L'accès à Frescy est suspendu</h1></div>
         <p>Vos ${active().length} produits suivis et votre historique sont conservés. Tout revient dès la réactivation.</p>
-        <div class="box"><div class="box-row"><div class="grow"><div class="opt-t">Dalia Commerce</div><div class="opt-s">Sans engagement</div></div><span class="opt-t num">39 € HT/mois</span></div></div>
+        <div class="box"><div class="box-row"><div class="grow"><div class="opt-t">Frescy Commerce</div><div class="opt-s">Sans engagement</div></div><span class="opt-t num">39 € HT/mois</span></div></div>
         <button class="btn btn-primary btn-block" data-act="reactivate">Réactiver mon abonnement</button>
         <button class="btn btn-text btn-block" data-act="logout">Se déconnecter</button>
       </div>`;
@@ -954,7 +960,7 @@ body[data-view="desk"] .stage { display: none; }
   function renderHome() {
     const list = active();
     const u = urgent().length;
-    const showHint = !store.get('dalia.hintSeen') && list.length;
+    const showHint = !store.get('frescy.hintSeen') && list.length;
     const banner = u
       ? `<div class="banner"><span class="dot red"></span><span><b>${u} produit${u > 1 ? 's' : ''}</b> à traiter aujourd'hui</span></div>`
       : `<div class="banner ok"><span class="dot green"></span><span><b>Rien d'urgent</b> aujourd'hui</span></div>`;
@@ -978,7 +984,7 @@ body[data-view="desk"] .stage { display: none; }
     $('#home-scroll').scrollTop = sc;
     S.products.forEach(p => { delete p.isNew; });
   }
-  const hintSeen = () => { if (!store.get('dalia.hintSeen')) store.set('dalia.hintSeen', '1'); };
+  const hintSeen = () => { if (!store.get('frescy.hintSeen')) store.set('frescy.hintSeen', '1'); };
 
   /* Glisser une ligne */
   const ACT_W = 252;
@@ -1026,7 +1032,7 @@ body[data-view="desk"] .stage { display: none; }
   });
   function nudgeFirstRow() {
     const row = $('#V-home .row');
-    if (!row || store.get('dalia.hintSeen')) return;
+    if (!row || store.get('frescy.hintSeen')) return;
     setTimeout(() => { setX(row, -100); setTimeout(() => setX(row, 0), 650); }, 450);
   }
   function phoneAct(id, kind, fromProduct) {
@@ -1233,7 +1239,7 @@ body[data-view="desk"] .stage { display: none; }
   const MODES = [
     { k: 'promo', t: 'Promo', s: 'Une remise selon la date.' },
     { k: 'rotation', t: 'Rotation', s: 'Quoi placer devant en rayon.' },
-    { k: 'both', t: 'Les deux', s: 'Dalia choisit selon le produit.' },
+    { k: 'both', t: 'Les deux', s: 'Frescy choisit selon le produit.' },
   ];
   function settingsBlocks() {
     const type = SHOP_TYPES.find(t => t.k === S.shop.type) || SHOP_TYPES[2];
@@ -1321,7 +1327,7 @@ body[data-view="desk"] .stage { display: none; }
   ];
   function stripHtml() {
     return `<div class="strip">
-      <b>Maquette Dalia</b><span style="opacity:.8">Données factices</span>
+      <b>Maquette Frescy</b><span style="opacity:.8">Données factices</span>
       <span class="grow"></span>
       <div class="seg-dark" role="group" aria-label="Type de vue">
         <button data-act="view" data-v="phone">${ic('phone', 'ico-sm')}Téléphone</button>
@@ -1547,7 +1553,7 @@ body[data-view="desk"] .stage { display: none; }
       <h2>Récapitulatif mensuel</h2>
       <p>Aperçu du PDF à transmettre à votre comptable.</p>
       <div class="paper">
-        <div class="paper-h"><div><h3>Dalia · récapitulatif ${monthName()} ${TODAY.getFullYear()}</h3><div class="muted" style="margin-top:4px">${esc(S.shop.name)} · Sète</div></div><div class="muted" style="text-align:right">4 semaines<br>au ${TODAY.toLocaleDateString('fr-FR')}</div></div>
+        <div class="paper-h"><div><h3>Frescy · récapitulatif ${monthName()} ${TODAY.getFullYear()}</h3><div class="muted" style="margin-top:4px">${esc(S.shop.name)} · Sète</div></div><div class="muted" style="text-align:right">4 semaines<br>au ${TODAY.toLocaleDateString('fr-FR')}</div></div>
         <div class="ptot"><div>Récupérés<b>${eur(s.monthEur)}</b></div><div>Produits sauvés<b>${s.monthN}</b></div><div>Pertes<b>${eur(m.trash[1])}</b></div></div>
         <h4>Répartition</h4>
         <table><thead><tr><th>Type</th><th>Produits</th><th>Montant</th></tr></thead><tbody>
@@ -1557,7 +1563,7 @@ body[data-view="desk"] .stage { display: none; }
         <table><thead><tr><th>Semaine</th><th>Récupérés</th></tr></thead><tbody>
           ${s.month.map((v, i) => `<tr><td>${labels[i]}</td><td>${eur(v)}</td></tr>`).join('')}
         </tbody></table>
-        <div class="pfoot">Document généré par Dalia le ${TODAY.toLocaleDateString('fr-FR')}. Montants TTC encaissés en caisse.</div>
+        <div class="pfoot">Document généré par Frescy le ${TODAY.toLocaleDateString('fr-FR')}. Montants TTC encaissés en caisse.</div>
       </div>
       <div class="dmodal-actions">
         <button class="btn btn-ghost" data-act="dmodal-close">Fermer</button>
@@ -1711,7 +1717,7 @@ body[data-view="desk"] .stage { display: none; }
 
   function protoGo(k) {
     closeSheet(); closeModal(); clearTimeout(SC.timer);
-    if (k === 'reset') { const v = S.view; S = fresh(); S.view = v; SC.idx = 0; store.del('dalia.hintSeen'); route(); return; }
+    if (k === 'reset') { const v = S.view; S = fresh(); S.view = v; SC.idx = 0; store.del('frescy.hintSeen'); route(); return; }
     if (k === 'login') { S.logged = false; S.auth = 'signup'; S.step = 1; route(); return; }
     S.logged = true;
     if (k === 'inactive') { S.sub = 'inactive'; route(); return; }
