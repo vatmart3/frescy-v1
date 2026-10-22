@@ -1,0 +1,1243 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette Dalia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Mise en page : un téléphone centré (plein écran sur mobile), écrans empilés en calques, barre d'onglets + bouton Scanner flottant au pouce. */
+:root {
+  --blue: #1D3FBF;
+  --blue-press: #17329A;
+  --blue-50: #EEF1FC;
+  --blue-200: #C3CCF1;
+  --navy: #0E1A3A;
+  --muted: #5A6278;
+  --faint: #8A90A2;
+  --bg: #FBFAF7;
+  --bg-deep: #F1EFE9;
+  --card: #FFFFFF;
+  --line: #E7E4DC;
+  --line-strong: #D7D3C8;
+  --apricot: #F2A541;
+  --apricot-50: #FDF1DE;
+  --apricot-ink: #7A4600;
+  --red: #D23A3A;
+  --red-50: #FCEDEC;
+  --orange: #E2691A;
+  --orange-50: #FDF0E6;
+  --green: #2B8F55;
+  --green-50: #E7F4EC;
+  --cam: #0B1022;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --r-card: 16px;
+  --r-btn: 14px;
+  --t: 180ms cubic-bezier(.2,.7,.2,1);
+  color-scheme: light;
+}
+html { box-sizing: border-box; height: 100%; }
+*, *::before, *::after { box-sizing: inherit; }
+body {
+  margin: 0; height: 100%;
+  background: var(--bg-deep); color: var(--navy);
+  font: 15px/1.4 var(--font);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+[hidden] { display: none !important; }
+button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
+input { font: inherit; color: inherit; }
+button:focus-visible, input:focus-visible, [tabindex]:focus-visible, .chip:focus-within, .tile:focus-within { outline: 2px solid var(--blue); outline-offset: 2px; }
+.ico { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.ico-sm { width: 18px; height: 18px; }
+.ico-lg { width: 28px; height: 28px; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* ---------- Scène (bureau) ---------- */
+.stage { height: 100%; display: flex; align-items: center; justify-content: center; gap: 48px; padding: 24px; }
+.device {
+  position: relative; width: 390px; height: min(844px, 100%); flex: none;
+  border-radius: 44px; border: 1px solid var(--line-strong); background: var(--bg);
+  overflow: hidden; box-shadow: 0 40px 80px -48px rgba(14,26,58,.35);
+}
+.app { position: absolute; inset: 0; overflow: hidden; }
+.proto { width: 250px; display: flex; flex-direction: column; gap: 14px; }
+.proto h2 { margin: 0; font-size: 20px; letter-spacing: -.01em; }
+.proto p { margin: 0; color: var(--muted); font-size: 13px; }
+.proto-list { display: flex; flex-direction: column; gap: 6px; }
+.proto-list button {
+  text-align: left; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--card); font-size: 14px; font-weight: 500; display: flex; gap: 10px; align-items: center;
+  transition: border-color var(--t), background var(--t);
+}
+.proto-list button:hover { border-color: var(--blue-200); }
+.proto-list button.on { border-color: var(--blue); background: var(--blue-50); color: var(--blue); }
+.proto-list .n { width: 20px; color: var(--faint); font-variant-numeric: tabular-nums; font-size: 12px; }
+.proto-list button.on .n { color: var(--blue); }
+.proto-reset { font-size: 13px; color: var(--blue); font-weight: 500; text-align: left; }
+@media (max-width: 760px) {
+  .stage { padding: 0; display: block; }
+  .device { width: 100%; height: 100%; border: 0; border-radius: 0; box-shadow: none; }
+  .proto { display: none; }
+}
+@media (min-width: 761px) { .app { top: 10px; } }
+
+/* ---------- Calques ---------- */
+.layer {
+  position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg); isolation: isolate;
+  visibility: hidden; opacity: 0; pointer-events: none;
+  transition: opacity var(--t), transform var(--t), visibility 0s linear 180ms;
+}
+.layer.on { visibility: visible; opacity: 1; pointer-events: auto; transform: none; transition: opacity var(--t), transform var(--t), visibility 0s; }
+.layer-push { transform: translateX(28px); }
+.layer-up { transform: translateY(28px); }
+.scroll { flex: 1; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.pad { padding: 0 16px; }
+
+/* ---------- Boutons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  height: 56px; padding: 0 20px; border-radius: var(--r-btn); font-weight: 600; font-size: 16px;
+  transition: background var(--t), transform 120ms, opacity var(--t);
+}
+.btn:active { transform: scale(.98); }
+.btn-block { width: 100%; }
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-primary:active { background: var(--blue-press); }
+.btn-primary:disabled { opacity: .35; pointer-events: none; }
+.btn-ghost { background: var(--card); border: 1px solid var(--line-strong); color: var(--navy); }
+.btn-promo { background: var(--apricot); color: var(--navy); }
+.btn-danger-text { color: var(--red); }
+.link { color: var(--blue); font-weight: 600; }
+
+/* ---------- Connexion ---------- */
+.login { padding: 28px 20px 28px; display: flex; flex-direction: column; gap: 22px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 24px; letter-spacing: -.02em; }
+.brand-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--blue); display: grid; place-items: center; }
+.brand-mark svg { width: 20px; height: 20px; stroke: #fff; }
+.login h1 { margin: 0; font-size: 26px; line-height: 1.15; letter-spacing: -.02em; text-wrap: balance; }
+.login .lead { margin: 6px 0 0; color: var(--muted); }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding: 4px; gap: 4px; background: var(--bg-deep); border-radius: 14px; border: 1px solid var(--line); }
+.seg button { height: 44px; border-radius: 10px; font-weight: 600; font-size: 14px; color: var(--muted); transition: background var(--t), color var(--t); }
+.seg button.on { background: var(--card); color: var(--navy); box-shadow: 0 0 0 1px var(--line); }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field > span { font-size: 13px; font-weight: 600; color: var(--muted); }
+.input {
+  height: 54px; padding: 0 16px; border-radius: 14px; border: 1px solid var(--line-strong);
+  background: var(--card); font-size: 16px; width: 100%; transition: border-color var(--t);
+}
+.input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-50); }
+.form { display: flex; flex-direction: column; gap: 14px; }
+.types { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.type {
+  height: 76px; border: 1px solid var(--line-strong); border-radius: 14px; background: var(--card);
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 6px; padding: 0 14px;
+  font-weight: 600; font-size: 15px; transition: border-color var(--t), background var(--t), color var(--t);
+}
+.type .ico { color: var(--muted); }
+.type.on { border-color: var(--blue); background: var(--blue-50); color: var(--blue); }
+.type.on .ico { color: var(--blue); }
+.fine { font-size: 12px; color: var(--faint); text-align: center; }
+
+/* ---------- Accueil ---------- */
+.top { padding: 18px 16px 10px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.top-sub { font-size: 13px; color: var(--muted); font-weight: 500; }
+.top h1 { margin: 2px 0 0; font-size: 24px; letter-spacing: -.02em; line-height: 1.15; }
+.avatar { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); display: grid; place-items: center; font-weight: 700; font-size: 14px; color: var(--blue); flex: none; }
+
+.summary {
+  margin: 4px 16px 12px; padding: 16px; border-radius: var(--r-card); background: var(--card); border: 1px solid var(--line);
+  display: flex; align-items: center; gap: 14px;
+}
+.summary-n { width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; font-size: 24px; font-weight: 700; flex: none; }
+.summary-n.red { background: var(--red-50); color: var(--red); }
+.summary-n.ok { background: var(--green-50); color: var(--green); }
+.summary-t { font-size: 17px; font-weight: 600; line-height: 1.25; }
+.summary-s { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+.hint { margin: 0 16px 6px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.hint b { color: var(--navy); font-weight: 600; }
+.hint button { margin-left: auto; color: var(--faint); padding: 6px; }
+
+.section { padding: 0 16px; margin-top: 14px; }
+.sec-h {
+  position: sticky; top: 0; z-index: 2; background: var(--bg);
+  display: flex; align-items: center; gap: 8px; padding: 8px 2px; font-size: 13px; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--muted);
+}
+.sec-h .cnt { font-weight: 600; color: var(--faint); }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.dot.red { background: var(--red); }
+.dot.orange { background: var(--orange); }
+.dot.green { background: var(--green); }
+.group { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); overflow: hidden; }
+.swipe { position: relative; overflow: hidden; transition: height var(--t), opacity var(--t); }
+.swipe + .swipe { border-top: 1px solid var(--line); }
+.swipe-actions { position: absolute; inset: 0 0 0 auto; display: flex; }
+.swipe-actions button {
+  width: 78px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  font-size: 12px; font-weight: 600; color: #fff;
+}
+.act-sold { background: var(--green); }
+.act-feat { background: var(--blue); }
+.act-feat.promo { background: var(--apricot); color: var(--navy) !important; }
+.act-trash { background: var(--red); }
+.row {
+  position: relative; z-index: 1; background: var(--card); min-height: 68px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  transition: transform 200ms cubic-bezier(.2,.7,.2,1), background var(--t); cursor: pointer;
+}
+.row.dragging { transition: none; }
+.row.flash { animation: flash 1.4s ease-out; }
+@keyframes flash { 0%, 30% { background: var(--blue-50); } 100% { background: var(--card); } }
+.row-main { flex: 1; min-width: 0; }
+.row-name { font-weight: 600; font-size: 15px; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row-sub { font-size: 13px; color: var(--muted); margin-top: 3px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.row-side { text-align: right; flex: none; }
+.row-qty { font-weight: 700; font-size: 17px; font-variant-numeric: tabular-nums; }
+.row-date { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.row.featured .row-name { color: var(--muted); }
+.tag { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.tag-promo { background: var(--apricot-50); color: var(--apricot-ink); box-shadow: inset 0 0 0 1px #F4CF94; }
+.tag-blue { background: var(--blue-50); color: var(--blue); }
+.empty { margin: 24px 16px; padding: 28px 16px; text-align: center; color: var(--muted); border: 1px dashed var(--line-strong); border-radius: var(--r-card); }
+.list-end { height: 120px; }
+
+/* ---------- Barre d'onglets + Scanner ---------- */
+.views { position: relative; flex: 1; }
+.view { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: opacity 140ms, visibility 0s 140ms; }
+.view.on { opacity: 1; visibility: visible; transition: opacity 140ms, visibility 0s; }
+.tabbar { flex: none; height: 66px; display: grid; grid-template-columns: repeat(3, 1fr); background: var(--card); border-top: 1px solid var(--line); }
+.tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-size: 12px; font-weight: 600; color: var(--faint); position: relative; }
+.tab.on { color: var(--blue); }
+.badge { position: absolute; top: 8px; left: calc(50% + 6px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--red); color: #fff; font-size: 11px; font-weight: 700; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+.fab {
+  position: absolute; left: 50%; bottom: 80px; transform: translateX(-50%); z-index: 5;
+  height: 62px; padding: 0 30px 0 24px; border-radius: 999px; background: var(--blue); color: #fff;
+  display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 17px;
+  box-shadow: 0 10px 22px -10px rgba(29,63,191,.65); transition: background var(--t), transform 120ms;
+}
+.fab .ico { width: 26px; height: 26px; }
+.fab:active { background: var(--blue-press); transform: translateX(-50%) scale(.97); }
+
+/* ---------- Fiche produit ---------- */
+.bar { flex: none; height: 60px; display: flex; align-items: center; gap: 8px; padding: 0 8px; }
+.icon-btn { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; }
+.icon-btn:active { background: var(--bg-deep); }
+.bar-title { font-weight: 600; font-size: 16px; }
+.p-head { padding: 4px 16px 0; }
+.p-cat { font-size: 13px; color: var(--muted); font-weight: 500; }
+.p-name { margin: 4px 0 12px; font-size: 24px; line-height: 1.2; letter-spacing: -.02em; text-wrap: balance; }
+.status { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border-radius: 999px; font-weight: 600; font-size: 14px; }
+.status.red { background: var(--red-50); color: var(--red); }
+.status.orange { background: var(--orange-50); color: #A84A0C; }
+.status.green { background: var(--green-50); color: var(--green); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 16px; }
+.tile { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); padding: 12px 14px; min-height: 84px; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
+.tile-l { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.tile-v { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tile-edit { position: absolute; top: 10px; right: 10px; color: var(--faint); }
+.tile input[type="date"] { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.stepper { display: flex; align-items: center; gap: 8px; }
+.stepper button { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--card); display: grid; place-items: center; }
+.stepper button:active { background: var(--bg-deep); }
+.stepper .v { min-width: 34px; text-align: center; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.tile .stepper button { width: 36px; height: 36px; border-radius: 10px; }
+.advice { margin: 0 16px 10px; padding: 16px; border-radius: var(--r-card); display: flex; gap: 14px; align-items: flex-start; }
+.advice-k { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+.advice-t { font-size: 19px; font-weight: 700; margin-top: 4px; line-height: 1.25; }
+.advice-s { font-size: 14px; margin-top: 4px; }
+.advice .ico-wrap { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; flex: none; }
+.advice.promo { background: var(--apricot-50); border: 1px solid #F4CF94; }
+.advice.promo .advice-k, .advice.promo .advice-s { color: var(--apricot-ink); }
+.advice.promo .ico-wrap { background: var(--apricot); color: var(--navy); }
+.advice.rot { background: var(--blue-50); border: 1px solid var(--blue-200); }
+.advice.rot .advice-k { color: var(--blue); }
+.advice.rot .advice-s { color: #33447A; }
+.advice.rot .ico-wrap { background: var(--blue); color: #fff; }
+.advice.neutral { background: var(--card); border: 1px solid var(--line); }
+.advice.neutral .advice-k, .advice.neutral .advice-s { color: var(--muted); }
+.advice.neutral .ico-wrap { background: var(--bg-deep); color: var(--muted); }
+.advice.bad { background: var(--red-50); border: 1px solid #F3C9C6; }
+.advice.bad .advice-k, .advice.bad .advice-s { color: #9C2525; }
+.advice.bad .ico-wrap { background: var(--red); color: #fff; }
+.price-old { text-decoration: line-through; opacity: .6; font-weight: 500; margin-right: 6px; }
+.p-actions { flex: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 16px 16px; border-top: 1px solid var(--line); background: var(--card); }
+.p-actions button { height: 64px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-weight: 600; font-size: 13px; border: 1px solid var(--line-strong); background: var(--card); }
+.p-actions button:active { transform: scale(.97); }
+.p-actions .a-sold { color: var(--green); }
+.p-actions .a-feat { color: var(--blue); }
+.p-actions .a-feat.promo { color: var(--apricot-ink); background: var(--apricot-50); border-color: #F4CF94; }
+.p-actions .a-trash { color: var(--red); }
+.meta { padding: 0 16px 16px; font-size: 13px; color: var(--faint); }
+
+/* ---------- Économies ---------- */
+.kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 16px 0; }
+.kpi { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); padding: 14px; }
+.kpi-l { font-size: 13px; color: var(--muted); font-weight: 500; }
+.kpi-v { font-size: 28px; font-weight: 700; letter-spacing: -.02em; margin-top: 4px; font-variant-numeric: tabular-nums; }
+.kpi-d { font-size: 12px; color: var(--green); font-weight: 600; margin-top: 2px; }
+.card { margin: 10px 16px 0; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); padding: 16px; }
+.card-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.card-t { font-weight: 600; font-size: 15px; }
+.card-s { font-size: 12px; color: var(--muted); }
+.chart { width: 100%; height: auto; display: block; margin-top: 10px; }
+.chart text { font-family: var(--font); fill: var(--muted); font-size: 11px; }
+.chart .v { fill: var(--navy); font-weight: 600; }
+.chart .cur { fill: var(--blue); font-weight: 700; }
+.lines { display: flex; flex-direction: column; }
+.line { display: flex; align-items: center; gap: 10px; padding: 12px 0; font-size: 14px; }
+.line + .line { border-top: 1px solid var(--line); }
+.line .lbl { flex: 1; }
+.line .q { color: var(--muted); font-variant-numeric: tabular-nums; }
+.line .e { font-weight: 600; font-variant-numeric: tabular-nums; min-width: 78px; text-align: right; }
+.sw { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+
+/* ---------- Réglages ---------- */
+.h-title { padding: 18px 16px 4px; }
+.h-title h1 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
+.set-label { padding: 18px 18px 8px; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.opts { display: flex; flex-direction: column; gap: 8px; padding: 0 16px; }
+.opt { display: flex; align-items: center; gap: 12px; text-align: left; padding: 14px; min-height: 68px; border-radius: var(--r-card); border: 1px solid var(--line); background: var(--card); transition: border-color var(--t), background var(--t); }
+.opt.on { border-color: var(--blue); background: var(--blue-50); }
+.radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line-strong); flex: none; display: grid; place-items: center; }
+.opt.on .radio { border-color: var(--blue); }
+.opt.on .radio::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--blue); }
+.opt-t { font-weight: 600; }
+.opt-s { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.box { margin: 0 16px; background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); }
+.box-row { display: flex; align-items: center; gap: 12px; padding: 14px; min-height: 60px; }
+.box-row + .box-row { border-top: 1px solid var(--line); }
+.box-row .grow { flex: 1; min-width: 0; }
+.stepper .time-v { min-width: 64px; }
+.notif { margin: 10px 16px 0; padding: 12px 14px; border-radius: 14px; background: var(--bg-deep); display: flex; gap: 10px; font-size: 13px; }
+.notif .brand-mark { width: 28px; height: 28px; border-radius: 8px; }
+.notif .brand-mark svg { width: 16px; height: 16px; }
+.notif b { font-weight: 600; }
+.pill { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; font-size: 13px; font-weight: 600; }
+.pill.ok { background: var(--green-50); color: var(--green); }
+.pill.off { background: var(--red-50); color: var(--red); }
+.plain-btn { width: 100%; text-align: left; display: flex; align-items: center; gap: 12px; }
+
+/* ---------- Abonnement inactif ---------- */
+.locked { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px 20px; gap: 16px; }
+.locked .lock { width: 64px; height: 64px; border-radius: 18px; background: var(--red-50); color: var(--red); display: grid; place-items: center; }
+.locked h1 { margin: 0; font-size: 26px; line-height: 1.15; letter-spacing: -.02em; text-wrap: balance; }
+.locked p { margin: 0; color: var(--muted); }
+.locked .box { margin: 0; }
+
+/* ---------- Scan ---------- */
+.scan { background: var(--cam); color: #fff; }
+.scan-top { position: absolute; top: 0; left: 0; right: 0; z-index: 3; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px; }
+.cam-btn { height: 44px; padding: 0 14px; border-radius: 999px; background: rgba(255,255,255,.12); color: #fff; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 14px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.cam-btn.on { background: #fff; color: var(--navy); }
+.cam-count { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.8); padding: 0 6px; font-variant-numeric: tabular-nums; }
+.cam { position: absolute; inset: 0; overflow: hidden;
+  background:
+    radial-gradient(120% 60% at 50% 35%, #2A3350 0%, rgba(11,16,34,0) 70%),
+    linear-gradient(180deg, #151B33 0%, #0B1022 100%);
+}
+.shelf { position: absolute; left: -10%; right: -10%; top: 58%; height: 14px; background: #2B3150; border-top: 1px solid #3A4266; }
+.pack {
+  position: absolute; left: 50%; top: 33%; width: 230px; transform: translate(-50%, -50%) rotate(-3deg);
+  background: #F7F4EC; color: #1B1B1B; border-radius: 10px; padding: 14px 14px 12px;
+  transition: transform 320ms cubic-bezier(.2,.7,.2,1), opacity 220ms;
+}
+.pack.enter { transform: translate(40%, -50%) rotate(4deg); opacity: 0; }
+.pack-brand { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #6B6457; font-weight: 700; }
+.pack-name { font-size: 15px; font-weight: 700; margin-top: 2px; line-height: 1.2; }
+.pack-bc { margin-top: 10px; height: 44px; }
+.pack-bc svg { width: 100%; height: 100%; display: block; }
+.pack-ean { font-size: 11px; letter-spacing: .14em; text-align: center; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.pack-date { margin-top: 8px; font: 600 12px/1.2 ui-monospace, "SF Mono", Menlo, Consolas, monospace; padding: 5px 7px; border: 1px dashed #A49C8C; border-radius: 6px; color: #2A2A2A; }
+.pack-date.missing { color: #A49C8C; }
+.finder { position: absolute; left: 50%; top: 33%; width: 268px; height: 214px; transform: translate(-50%, -50%); }
+.finder i { position: absolute; width: 34px; height: 34px; border: 3px solid #fff; transition: border-color var(--t); }
+.finder i:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; border-top-left-radius: 14px; }
+.finder i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; border-top-right-radius: 14px; }
+.finder i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; border-bottom-left-radius: 14px; }
+.finder i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; border-bottom-right-radius: 14px; }
+.finder .beam { position: absolute; left: 12px; right: 12px; height: 2px; background: #6E8BFF; box-shadow: 0 0 12px #6E8BFF; top: 10%; animation: beam 1.3s ease-in-out infinite alternate; }
+@keyframes beam { to { top: 88%; } }
+.scan.found .finder i { border-color: #4CD38A; }
+.scan.found .finder .beam { display: none; }
+.scan-msg { position: absolute; left: 0; right: 0; top: calc(33% + 128px); text-align: center; font-size: 15px; font-weight: 600; color: rgba(255,255,255,.9); }
+.scan-msg small { display: block; font-size: 13px; font-weight: 500; color: rgba(255,255,255,.6); margin-top: 4px; }
+.manual { position: absolute; left: 0; right: 0; bottom: 28px; text-align: center; }
+.manual button { color: #fff; font-weight: 600; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; padding: 12px; opacity: .85; }
+.ssheet {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4; background: var(--bg); color: var(--navy);
+  border-radius: 22px 22px 0 0; padding: 10px 16px 16px; display: flex; flex-direction: column; gap: 14px;
+  transform: translateY(102%); transition: transform 220ms cubic-bezier(.2,.7,.2,1);
+}
+.ssheet.on { transform: none; }
+.grab { width: 40px; height: 4px; border-radius: 4px; background: var(--line-strong); margin: 0 auto; }
+.s-name-wrap { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); padding-bottom: 10px; }
+.s-name { flex: 1; min-width: 0; border: 0; background: none; font-size: 19px; font-weight: 700; padding: 4px 0; }
+.s-name:focus { outline: none; }
+.s-name-wrap:focus-within { border-color: var(--blue); }
+.s-ean { font-size: 12px; color: var(--muted); margin-top: 4px; display: flex; gap: 6px; align-items: center; }
+.ok-chip { display: inline-flex; align-items: center; gap: 4px; color: var(--green); font-weight: 600; }
+.s-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.s-lbl { font-size: 13px; font-weight: 600; color: var(--muted); }
+.s-date-big { font-size: 17px; font-weight: 700; }
+.chips { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.chip { position: relative; height: 52px; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--card); display: grid; place-items: center; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; transition: background var(--t), border-color var(--t), color var(--t); }
+.chip.on { background: var(--blue); border-color: var(--blue); color: #fff; }
+.chip input[type="date"] { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.read-ok { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: var(--green-50); }
+.read-ok .grow { flex: 1; }
+.read-ok .s-lbl { color: var(--green); }
+
+/* ---------- Feuille du bas & toast ---------- */
+.backdrop { position: absolute; inset: 0; z-index: 20; background: rgba(14,26,58,.35); opacity: 0; visibility: hidden; transition: opacity var(--t), visibility 0s 180ms; }
+.backdrop.on { opacity: 1; visibility: visible; transition: opacity var(--t), visibility 0s; }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; z-index: 21; background: var(--bg); border-radius: 22px 22px 0 0; padding: 10px 16px 20px; transform: translateY(102%); transition: transform 220ms cubic-bezier(.2,.7,.2,1); display: flex; flex-direction: column; gap: 14px; }
+.sheet.on { transform: none; }
+.sheet h2 { margin: 4px 0 0; font-size: 20px; letter-spacing: -.01em; }
+.sheet p { margin: 0; color: var(--muted); }
+.toast {
+  position: absolute; left: 16px; right: 16px; bottom: 156px; z-index: 30;
+  background: var(--navy); color: #fff; border-radius: 14px; min-height: 52px; padding: 8px 8px 8px 16px;
+  display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500;
+  transform: translateY(12px); opacity: 0; visibility: hidden; transition: opacity var(--t), transform var(--t), visibility 0s 180ms;
+}
+.toast.on { transform: none; opacity: 1; visibility: visible; transition: opacity var(--t), transform var(--t), visibility 0s; }
+.toast .msg { flex: 1; min-width: 0; }
+.toast button { height: 40px; padding: 0 12px; border-radius: 10px; color: #A9B8FF; font-weight: 700; }
+.app.on-scan .toast { top: 70px; bottom: auto; }
+.app.on-sheetless .toast { bottom: 92px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; }
+}
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="proto" aria-label="Navigation de la maquette">
+    <div class="brand"><span class="brand-mark"><svg class="ico" viewBox="0 0 24 24"><path d="M12 21c-4.5-2.2-7-5.7-7-10a7 7 0 0 1 14 0c0 4.3-2.5 7.8-7 10Z"/><path d="M12 21V11"/></svg></span>Dalia</div>
+    <h2>Maquette mobile</h2>
+    <p>Prototype cliquable, données factices d'une épicerie de Sète. Rien n'est enregistré.</p>
+    <div class="proto-list" id="proto-list"></div>
+    <button class="proto-reset" data-go="reset">Réinitialiser la démo</button>
+  </aside>
+
+  <div class="device">
+    <div class="app" id="app">
+
+      <!-- 1. Connexion -->
+      <section class="layer" id="L-login" aria-label="Connexion"></section>
+
+      <!-- Coque principale -->
+      <section class="layer" id="L-main">
+        <div class="views">
+          <div class="view" id="V-home"></div>
+          <div class="view" id="V-savings"></div>
+          <div class="view" id="V-settings"></div>
+        </div>
+        <button class="fab" data-act="scan" aria-label="Scanner un produit">
+          <svg class="ico" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8v8M10.5 8v8M14 8v8M17 8v8"/></svg>
+          Scanner
+        </button>
+        <nav class="tabbar" id="tabbar"></nav>
+      </section>
+
+      <!-- 4. Fiche produit -->
+      <section class="layer layer-push" id="L-product" aria-label="Fiche produit"></section>
+
+      <!-- 3. Scan -->
+      <section class="layer layer-up scan" id="L-scan" aria-label="Scanner"></section>
+
+      <!-- 7. Abonnement inactif -->
+      <section class="layer" id="L-inactive" aria-label="Abonnement inactif"></section>
+
+      <div class="backdrop" id="backdrop"></div>
+      <div class="sheet" id="sheet" role="dialog" aria-modal="true"></div>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  /* ---------- Outils ---------- */
+  const $ = (s, r = document) => r.querySelector(s);
+  const DAY = 864e5;
+  const TODAY = new Date(); TODAY.setHours(0, 0, 0, 0);
+  const addDays = n => new Date(TODAY.getTime() + n * DAY);
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  const fmtShort = d => d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+  const fmtLong = d => cap(d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }));
+  const eur = n => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+  const pct = n => `−${n} %`;
+  const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const offsetFromIso = v => { const [y, m, dd] = v.split('-').map(Number); return Math.round((new Date(y, m - 1, dd) - TODAY) / DAY); };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const buzz = () => { try { navigator.vibrate && navigator.vibrate(30); } catch (e) {} };
+
+  const P = {
+    list: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4.5 6h.01M4.5 12h.01M4.5 18h.01" stroke-width="2.6"/>',
+    chart: '<path d="M3 20h18"/><path d="M6 16v-4M11 16V7M16 16v-6M20.5 16V4"/>',
+    sliders: '<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+    scan: '<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 8v8M10.5 8v8M14 8v8M17 8v8"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    up: '<path d="M12 19V6M6 11.5L12 5.5l6 6"/>',
+    tag: '<path d="M3.5 12.3V4.5a1 1 0 0 1 1-1h7.8l8.2 8.2a1 1 0 0 1 0 1.4l-7.4 7.4a1 1 0 0 1-1.4 0L3.5 12.3Z"/><circle cx="8" cy="8" r="1.4"/>',
+    trash: '<path d="M4 7h16M9.5 7V4.5h5V7M6 7l1 13h10l1-13"/><path d="M10 11v5M14 11v5"/>',
+    back: '<path d="M15 5l-7 7 7 7"/>',
+    right: '<path d="M9 5l7 7-7 7"/>',
+    x: '<path d="M6 6l12 12M18 6L6 18"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    minus: '<path d="M5 12h14"/>',
+    cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    bell: '<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15L6 16Z"/><path d="M10 21h4"/>',
+    pencil: '<path d="M4 20h4L19 9l-4-4L4 16v4Z"/>',
+    bolt: '<path d="M13 2.5 5 13.5h6.5l-1 8 8-11H12l1-8Z"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+    card: '<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/>',
+    doc: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>',
+    store: '<path d="M4 9.5 5.5 4h13L20 9.5"/><path d="M4 9.5h16v1.5a3 3 0 0 1-5.3 1.9 3 3 0 0 1-5.4 0A3 3 0 0 1 4 11V9.5Z"/><path d="M5.5 14v6h13v-6M10 20v-4h4v4"/>',
+    bread: '<path d="M4 12.5C4 8.4 7.6 6 12 6s8 2.4 8 6.5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18v-5.5Z"/><path d="M9 9.5l1.2 3M12.5 9l.6 3.3M16 9.8l-.6 2.8"/>',
+    meat: '<path d="M14.5 4.5c3 0 5.5 2.4 5.5 5.6 0 4.3-4.6 8.4-9.2 8.4-2.2 0-3.3-1.3-4.6-1.3L4.3 19.1a1 1 0 0 1-1.4-1.4l2-1.9C5 14.5 4 13.4 4 11.6c0-4 5.5-7.1 10.5-7.1Z"/><circle cx="13.5" cy="10.5" r="2"/>',
+    basket: '<path d="M3.5 10h17l-1.6 8.6a2 2 0 0 1-2 1.6H7.1a2 2 0 0 1-2-1.6L3.5 10Z"/><path d="M8 10l3-6M16 10l-3-6M9.5 14v2.5M14.5 14v2.5"/>',
+    leaf: '<path d="M12 21c-4.5-2.2-7-5.7-7-10a7 7 0 0 1 14 0c0 4.3-2.5 7.8-7 10Z"/><path d="M12 21V11"/>',
+  };
+  const ic = (k, cls = '') => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg>`;
+
+  /* ---------- Données factices ---------- */
+  const SHOP_TYPES = [
+    { k: 'boulangerie', label: 'Boulangerie', icon: 'bread' },
+    { k: 'boucherie', label: 'Boucherie', icon: 'meat' },
+    { k: 'epicerie', label: 'Épicerie', icon: 'basket' },
+    { k: 'superette', label: 'Supérette', icon: 'store' },
+  ];
+  const PRODUCTS0 = [
+    { id: 'p1', name: 'Yaourt nature au lait entier 4×125 g', cat: 'Crèmerie', d: -1, qty: 2, price: 2.10, ean: '3 270 190 207 924' },
+    { id: 'p2', name: 'Sandwich jambon-beurre', cat: 'Snacking · fait maison', d: 0, qty: 4, price: 3.90, ean: null },
+    { id: 'p3', name: 'Flan pâtissier (part)', cat: 'Pâtisserie', d: 0, qty: 3, price: 2.80, ean: null },
+    { id: 'p4', name: 'Jambon blanc supérieur 4 tranches', cat: 'Charcuterie', d: 1, qty: 5, price: 3.45, ean: '3 266 980 117 452' },
+    { id: 'p5', name: 'Fromage frais ail & fines herbes 150 g', cat: 'Crèmerie', d: 1, qty: 2, price: 2.60, ean: '3 523 230 031 006' },
+    { id: 'p6', name: 'Sandwich thon-crudités', cat: 'Snacking · fait maison', d: 1, qty: 3, price: 4.20, ean: null },
+    { id: 'p7', name: 'Tielle sétoise 250 g', cat: 'Traiteur', d: 2, qty: 4, price: 4.50, ean: '3 701 112 400 095' },
+    { id: 'p8', name: 'Yaourt à la grecque 4×100 g', cat: 'Crèmerie', d: 3, qty: 3, price: 2.95, ean: '3 033 491 552 870' },
+    { id: 'p9', name: 'Flan nature 4×100 g', cat: 'Crèmerie', d: 3, qty: 2, price: 2.40, ean: '3 250 391 640 215' },
+    { id: 'p10', name: 'Faisselle de brebis 4×100 g', cat: 'Crèmerie', d: 5, qty: 3, price: 3.80, ean: '3 760 245 810 411' },
+    { id: 'p11', name: 'Jambon cru 6 tranches', cat: 'Charcuterie', d: 6, qty: 4, price: 4.90, ean: '3 266 980 202 806' },
+    { id: 'p12', name: 'Fromage frais nature 500 g', cat: 'Crèmerie', d: 8, qty: 2, price: 3.10, ean: '3 523 230 011 527' },
+    { id: 'p13', name: 'Yaourts aux fruits 8×125 g', cat: 'Crèmerie', d: 9, qty: 6, price: 3.60, ean: '3 033 491 118 044' },
+  ];
+  const SCAN_QUEUE = [
+    { name: 'Yaourt au lait de brebis 4×125 g', brand: 'Bergerie d\'Oc', cat: 'Crèmerie', ean: '3 760 245 810 336', price: 3.20, read: 5 },
+    { name: 'Sandwich poulet-crudités', brand: 'Fait maison', cat: 'Snacking · fait maison', ean: '2 000 410 000 128', price: 4.20, read: null },
+    { name: 'Jambon blanc supérieur 4 tranches', brand: 'Charcuterie du Midi', cat: 'Charcuterie', ean: '3 266 980 117 452', price: 3.45, read: null },
+    { name: 'Fromage frais de chèvre 150 g', brand: 'Fromagerie des Garrigues', cat: 'Crèmerie', ean: '3 523 230 024 718', price: 2.95, read: 6 },
+    { name: 'Tielle sétoise 250 g', brand: 'Traiteur du Quai', cat: 'Traiteur', ean: '3 701 112 400 095', price: 4.50, read: 2 },
+  ];
+  // Économies déjà réalisées avant la session (semaine glissante, 4 dernières semaines)
+  const WEEK_EUR = [18.4, 24.1, 12.9, 31.2, 22.6, 27.8, 5.6];
+  const MONTH_EUR = [131.2, 158.9, 154.6, 142.6];
+  const BASE = {
+    week: { normal: [17, 71.2], promo: [14, 46.9], front: [7, 24.5], trash: [4, 9.8] },
+    month: { normal: [69, 262.4], promo: [58, 213.1], front: [29, 111.8], trash: [15, 38.6] },
+  };
+
+  const fresh = () => ({
+    logged: false,
+    authMode: 'signup',
+    signupType: 'epicerie',
+    tab: 'home',
+    shop: { name: 'Épicerie du Môle', type: 'epicerie', email: 'contact@epicerie-du-mole.fr' },
+    mode: 'both',
+    alert: '07:30',
+    sub: 'active',
+    products: PRODUCTS0.map(p => ({ ...p })),
+    log: [],
+    period: 'week',
+    hint: true,
+    productId: null,
+  });
+  let S = fresh();
+  let seq = 100;
+
+  /* ---------- Règles métier ---------- */
+  const bucketOf = d => d < 0 ? 'expired' : d === 0 ? 'today' : d === 1 ? 'tomorrow' : d <= 3 ? 'soon' : 'later';
+  const BUCKETS = [
+    { k: 'expired', label: 'Périmé', tone: 'red' },
+    { k: 'today', label: 'Aujourd’hui', tone: 'red' },
+    { k: 'tomorrow', label: 'Demain', tone: 'orange' },
+    { k: 'soon', label: 'Dans 3 jours', tone: 'orange' },
+    { k: 'later', label: 'Plus tard', tone: 'green' },
+  ];
+  const toneOf = d => BUCKETS.find(b => b.k === bucketOf(d)).tone;
+  const relDay = d => d < -1 ? `Depuis ${-d} j` : d === -1 ? 'Depuis hier' : d === 0 ? 'Ce soir' : d === 1 ? 'Demain' : cap(fmtShort(addDays(d)));
+  const statusText = d => d < 0 ? (d === -1 ? 'Périmé depuis hier' : `Périmé depuis ${-d} jours`) : d === 0 ? 'Expire ce soir' : d === 1 ? 'Expire demain' : `Expire dans ${d} jours`;
+  const discountFor = d => d <= 0 ? 40 : d === 1 ? 30 : d <= 3 ? 20 : 0;
+  const usesPromo = () => S.mode !== 'rotation';
+  const usesRotation = () => S.mode !== 'promo';
+  const active = () => S.products.filter(p => !p.done);
+  const urgent = () => active().filter(p => p.d <= 0 && !p.featured);
+  const find = id => S.products.find(p => p.id === id);
+  const unitPrice = p => p.promo ? p.price * (1 - p.promo / 100) : p.price;
+
+  /* ---------- Calques ---------- */
+  const app = $('#app');
+  const layers = ['login', 'main', 'product', 'scan', 'inactive'];
+  function show(...on) {
+    layers.forEach(k => $('#L-' + k).classList.toggle('on', on.includes(k)));
+    app.classList.toggle('on-scan', on.includes('scan'));
+    app.classList.toggle('on-sheetless', on.includes('product'));
+    syncProto();
+  }
+  function route() {
+    if (!S.logged) { renderLogin(); show('login'); return; }
+    if (S.sub !== 'active') { renderInactive(); show('inactive'); return; }
+    renderMain(); show('main');
+  }
+
+  /* ---------- 1. Connexion / création de compte ---------- */
+  function renderLogin() {
+    const su = S.authMode === 'signup';
+    $('#L-login').innerHTML = `
+      <div class="scroll"><div class="login">
+        <div class="brand"><span class="brand-mark">${ic('leaf')}</span>Dalia</div>
+        <div>
+          <h1>${su ? 'Vos dates courtes, sous contrôle.' : 'Bon retour parmi nous.'}</h1>
+          <p class="lead">${su ? 'Créez votre compte en une minute.' : 'Connectez-vous à votre commerce.'}</p>
+        </div>
+        <div class="seg" role="tablist">
+          <button class="${su ? 'on' : ''}" data-act="auth" data-v="signup" role="tab" aria-selected="${su}">Créer un compte</button>
+          <button class="${!su ? 'on' : ''}" data-act="auth" data-v="login" role="tab" aria-selected="${!su}">Se connecter</button>
+        </div>
+        <form class="form" id="auth-form" novalidate>
+          <label class="field"><span>Email</span><input class="input" id="f-email" type="email" inputmode="email" autocomplete="email" placeholder="contact@moncommerce.fr" value="${su ? '' : esc(S.shop.email)}"></label>
+          <label class="field"><span>Mot de passe</span><input class="input" id="f-pass" type="password" autocomplete="${su ? 'new-password' : 'current-password'}" placeholder="8 caractères minimum" value="${su ? '' : 'motdepasse'}"></label>
+          ${su ? `
+          <label class="field"><span>Nom du commerce</span><input class="input" id="f-shop" type="text" autocomplete="organization" placeholder="Épicerie du Môle"></label>
+          <div class="field"><span>Type de commerce</span>
+            <div class="types">
+              ${SHOP_TYPES.map(t => `<button type="button" class="type ${S.signupType === t.k ? 'on' : ''}" data-act="stype" data-v="${t.k}" aria-pressed="${S.signupType === t.k}">${ic(t.icon)}${t.label}</button>`).join('')}
+            </div>
+          </div>` : `<button type="button" class="link" style="text-align:left;font-size:14px">Mot de passe oublié ?</button>`}
+          <button class="btn btn-primary btn-block" type="submit">${su ? 'Créer mon compte' : 'Se connecter'}</button>
+        </form>
+        <p class="fine">${su ? '39 € HT/mois, sans engagement. Résiliable à tout moment.' : 'Démo : identifiants pré-remplis.'}</p>
+      </div></div>`;
+  }
+
+  /* ---------- 2. Accueil : liste par urgence ---------- */
+  function renderMain() {
+    renderTabbar();
+    renderHome();
+    renderSavings();
+    renderSettings();
+    ['home', 'savings', 'settings'].forEach(k => $('#V-' + k).classList.toggle('on', S.tab === k));
+  }
+  function renderTabbar() {
+    const n = urgent().length;
+    const tabs = [
+      { k: 'home', label: 'À traiter', icon: 'list' },
+      { k: 'savings', label: 'Économies', icon: 'chart' },
+      { k: 'settings', label: 'Réglages', icon: 'sliders' },
+    ];
+    $('#tabbar').innerHTML = tabs.map(t => `
+      <button class="tab ${S.tab === t.k ? 'on' : ''}" data-act="tab" data-v="${t.k}" aria-current="${S.tab === t.k ? 'page' : 'false'}">
+        ${ic(t.icon)}${t.label}${t.k === 'home' && n ? `<span class="badge">${n}</span>` : ''}
+      </button>`).join('');
+  }
+  function featureTag(p) {
+    if (!p.featured) return '';
+    return p.promo ? `<span class="tag tag-promo">${pct(p.promo)}</span>` : `<span class="tag tag-blue">${ic('up', 'ico-sm')}Devant</span>`;
+  }
+  function rowHtml(p) {
+    const promoMode = usesPromo();
+    const sub = [`${p.cat}`, p.promo ? `<span class="price-old">${eur(p.price)}</span>${eur(unitPrice(p))}` : eur(p.price)].join(' · ');
+    return `
+      <div class="swipe" data-id="${p.id}">
+        <div class="swipe-actions" aria-hidden="true">
+          <button class="act-sold" data-act="do" data-k="sold" data-id="${p.id}" tabindex="-1">${ic('check')}Vendu</button>
+          <button class="act-feat ${promoMode ? 'promo' : ''}" data-act="do" data-k="feature" data-id="${p.id}" tabindex="-1">${ic(promoMode ? 'tag' : 'up')}Mis en avant</button>
+          <button class="act-trash" data-act="do" data-k="trash" data-id="${p.id}" tabindex="-1">${ic('trash')}Jeté</button>
+        </div>
+        <div class="row ${p.featured ? 'featured' : ''} ${p.isNew ? 'flash' : ''}" data-row="${p.id}" tabindex="0" role="button" aria-label="${esc(p.name)}, ${statusText(p.d)}, quantité ${p.qty}">
+          <span class="dot ${toneOf(p.d)}"></span>
+          <div class="row-main">
+            <div class="row-name">${esc(p.name)}</div>
+            <div class="row-sub">${featureTag(p)}<span>${sub}</span></div>
+          </div>
+          <div class="row-side"><div class="row-qty">×${p.qty}</div><div class="row-date">${relDay(p.d)}</div></div>
+        </div>
+      </div>`;
+  }
+  function renderHome() {
+    const list = active();
+    const u = urgent();
+    const exp = u.filter(p => p.d < 0).length;
+    const tod = u.filter(p => p.d === 0).length;
+    const atStake = u.filter(p => p.d === 0).reduce((s, p) => s + p.qty * p.price, 0);
+    const parts = [];
+    if (exp) parts.push(`${exp} périmé${exp > 1 ? 's' : ''}`);
+    if (tod) parts.push(`${tod} expire${tod > 1 ? 'nt' : ''} ce soir`);
+    if (atStake) parts.push(`${eur(atStake)} en jeu`);
+    const summary = u.length
+      ? `<div class="summary"><div class="summary-n red num">${u.length}</div><div><div class="summary-t">${u.length} produit${u.length > 1 ? 's' : ''} à traiter aujourd'hui</div><div class="summary-s">${parts.join(' · ')}</div></div></div>`
+      : `<div class="summary"><div class="summary-n ok">${ic('check')}</div><div><div class="summary-t">Rien d'urgent aujourd'hui</div><div class="summary-s">${list.length} produits suivis · prochaine alerte à ${S.alert.replace(':', ' h ')}</div></div></div>`;
+    const sections = BUCKETS.map(b => {
+      const items = list.filter(p => bucketOf(p.d) === b.k).sort((a, c) => a.d - c.d || (a.featured ? 1 : 0) - (c.featured ? 1 : 0));
+      if (!items.length) return '';
+      return `<div class="section"><div class="sec-h"><span class="dot ${b.tone}"></span>${b.label}<span class="cnt">${items.length}</span></div>
+        <div class="group">${items.map(rowHtml).join('')}</div></div>`;
+    }).join('');
+    $('#V-home').innerHTML = `
+      <div class="scroll" id="home-scroll">
+        <div class="top">
+          <div><div class="top-sub">${esc(S.shop.name)} · Sète</div><h1>${fmtLong(TODAY)}</h1></div>
+          <button class="avatar" data-act="tab" data-v="settings" aria-label="Réglages">${esc(initials(S.shop.name))}</button>
+        </div>
+        ${summary}
+        ${S.hint && list.length ? `<div class="hint">${ic('info', 'ico-sm')}<span>Glissez une ligne vers la gauche : <b>Vendu</b>, <b>Mis en avant</b> ou <b>Jeté</b>.</span><button data-act="hint" aria-label="Masquer l'astuce">${ic('x', 'ico-sm')}</button></div>` : ''}
+        ${sections || `<div class="empty">Aucun produit suivi.<br>Appuyez sur <b>Scanner</b> pour ajouter le premier.</div>`}
+        <div class="list-end"></div>
+      </div>`;
+    S.products.forEach(p => { delete p.isNew; });
+  }
+  const initials = n => n.split(/\s+/).filter(w => w.length > 2).slice(0, 2).map(w => w[0]).join('').toUpperCase() || 'D';
+
+  /* Glisser une ligne */
+  const ACT_W = 234;
+  let drag = null, openRow = null;
+  const setX = (row, x) => { row.style.transform = x ? `translateX(${x}px)` : ''; };
+  const closeOpen = () => { if (openRow) { setX(openRow, 0); openRow = null; } };
+  const home = $('#V-home');
+  home.addEventListener('pointerdown', e => {
+    const row = e.target.closest('.row');
+    if (!row || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    drag = { row, id: e.pointerId, x0: e.clientX, y0: e.clientY, base: row === openRow ? -ACT_W : 0, x: row === openRow ? -ACT_W : 0, active: false };
+  });
+  home.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
+    if (!drag.active) {
+      if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+        drag.active = true;
+        try { drag.row.setPointerCapture(drag.id); } catch (err) {}
+        drag.row.classList.add('dragging');
+        if (openRow && openRow !== drag.row) closeOpen();
+      } else if (Math.abs(dy) > 10) { drag = null; return; } else return;
+    }
+    let x = Math.min(0, drag.base + dx);
+    if (x < -ACT_W) x = -ACT_W + (x + ACT_W) * 0.3;
+    drag.x = x; setX(drag.row, x);
+  });
+  const endDrag = (e, cancelled) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const d = drag; drag = null;
+    if (!d.active) {
+      if (cancelled) return;
+      if (openRow) { closeOpen(); return; }
+      openProduct(d.row.dataset.row); return;
+    }
+    d.row.classList.remove('dragging');
+    if (d.x < -ACT_W / 3) { setX(d.row, -ACT_W); openRow = d.row; }
+    else { setX(d.row, 0); if (openRow === d.row) openRow = null; }
+  };
+  home.addEventListener('pointerup', e => endDrag(e, false));
+  home.addEventListener('pointercancel', e => endDrag(e, true));
+  home.addEventListener('keydown', e => {
+    const row = e.target.closest('.row');
+    if (row && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openProduct(row.dataset.row); }
+  });
+  function nudgeFirstRow() {
+    const row = $('#V-home .row');
+    if (!row || !S.hint) return;
+    setTimeout(() => { setX(row, -96); setTimeout(() => setX(row, 0), 650); }, 450);
+  }
+
+  /* Actions Vendu / Mis en avant / Jeté */
+  let lastUndo = null;
+  function act(id, kind, fromProduct) {
+    const p = find(id); if (!p) return;
+    const before = { ...p };
+    let msg, entry = null;
+    if (kind === 'feature') {
+      if (p.featured) { toast(`${short(p.name)} est déjà mis en avant`); closeOpen(); return; }
+      p.featured = true;
+      p.promo = usesPromo() ? (discountFor(p.d) || 20) : 0;
+      msg = p.promo ? `${short(p.name)} · promo ${pct(p.promo)}` : `${short(p.name)} · placé devant en rayon`;
+    } else {
+      p.done = kind;
+      const value = p.qty * (kind === 'sold' ? unitPrice(p) : p.price);
+      const cat = kind === 'trash' ? 'trash' : p.promo ? 'promo' : p.featured ? 'front' : 'normal';
+      entry = { id, cat, n: p.qty, eur: value };
+      S.log.push(entry);
+      msg = kind === 'sold' ? `${short(p.name)} · vendu, ${eur(value)} récupérés` : `${short(p.name)} · jeté`;
+    }
+    lastUndo = () => {
+      Object.keys(p).forEach(k => delete p[k]); Object.assign(p, before);
+      if (entry) S.log = S.log.filter(l => l !== entry);
+      renderMain();
+    };
+    const doRender = () => { openRow = null; renderMain(); toast(msg, true); };
+    if (fromProduct) { show('main'); doRender(); return; }
+    const wrap = document.querySelector(`.swipe[data-id="${id}"]`);
+    if (wrap && kind !== 'feature') {
+      wrap.style.height = wrap.offsetHeight + 'px';
+      requestAnimationFrame(() => { wrap.style.height = '0px'; wrap.style.opacity = '0'; });
+      setTimeout(doRender, 190);
+    } else doRender();
+  }
+  const short = n => n.replace(/\s\d.*$/, '').replace(/\s\(.*\)$/, '');
+
+  /* ---------- 4. Fiche produit ---------- */
+  function openProduct(id) {
+    closeOpen();
+    S.productId = id;
+    renderProduct();
+    show('main', 'product');
+  }
+  function adviceHtml(p) {
+    if (p.d < 0) return `<div class="advice bad"><span class="ico-wrap">${ic('trash')}</span><div><div class="advice-k">Action conseillée</div><div class="advice-t">Retirez-le de la vente</div><div class="advice-s">La date limite est dépassée : ce produit ne peut plus être vendu.</div></div></div>`;
+    const off = discountFor(p.d);
+    if (!off) return `<div class="advice neutral"><span class="ico-wrap">${ic('bell')}</span><div><div class="advice-k">Action conseillée</div><div class="advice-t">Rien à faire pour l'instant</div><div class="advice-s">Dalia vous préviendra 3 jours avant la date, le ${fmtShort(addDays(p.d - 3))}.</div></div></div>`;
+    let h = '';
+    if (usesPromo()) {
+      const np = p.price * (1 - off / 100);
+      h += `<div class="advice promo"><span class="ico-wrap">${ic('tag')}</span><div><div class="advice-k">Promo conseillée</div><div class="advice-t">${pct(off)} conseillé</div><div class="advice-s"><span class="price-old">${eur(p.price)}</span><b>${eur(np)}</b> l'unité. Étiquette à poser maintenant.</div></div></div>`;
+    }
+    if (usesRotation()) {
+      h += `<div class="advice rot"><span class="ico-wrap">${ic('up')}</span><div><div class="advice-k">Rotation</div><div class="advice-t">Placez-le devant en rayon</div><div class="advice-s">À hauteur des yeux, devant les dates plus longues.</div></div></div>`;
+    }
+    return h;
+  }
+  function renderProduct() {
+    const p = find(S.productId); if (!p) return;
+    const tone = toneOf(p.d);
+    const promoMode = usesPromo();
+    $('#L-product').innerHTML = `
+      <div class="bar"><button class="icon-btn" data-act="close-product" aria-label="Retour">${ic('back')}</button><span class="bar-title">Fiche produit</span></div>
+      <div class="scroll">
+        <div class="p-head">
+          <div class="p-cat">${esc(p.cat)}</div>
+          <h1 class="p-name">${esc(p.name)}</h1>
+          <span class="status ${tone}"><span class="dot ${tone}"></span>${statusText(p.d)}</span>
+          ${p.featured ? `<span style="margin-left:6px">${featureTag(p)}</span>` : ''}
+        </div>
+        <div class="grid2">
+          <div class="tile"><span class="tile-l">Date limite</span><span class="tile-v">${cap(fmtShort(addDays(p.d)))}</span>
+            <span class="tile-edit">${ic('pencil', 'ico-sm')}</span>
+            <input type="date" id="p-date" value="${iso(addDays(p.d))}" aria-label="Modifier la date limite"></div>
+          <div class="tile"><span class="tile-l">Quantité</span>
+            <div class="stepper"><button data-act="pqty" data-v="-1" aria-label="Retirer un">${ic('minus', 'ico-sm')}</button><span class="v">${p.qty}</span><button data-act="pqty" data-v="1" aria-label="Ajouter un">${ic('plus', 'ico-sm')}</button></div></div>
+          <div class="tile"><span class="tile-l">Prix unitaire</span><span class="tile-v">${p.promo ? `<span class="price-old" style="font-size:14px">${eur(p.price)}</span>` : ''}${eur(unitPrice(p))}</span></div>
+          <div class="tile"><span class="tile-l">Valeur en rayon</span><span class="tile-v">${eur(p.qty * unitPrice(p))}</span></div>
+        </div>
+        ${adviceHtml(p)}
+        <div class="meta">${p.ean ? `EAN ${p.ean}` : 'Produit fait maison, sans code-barres'} · DLC « à consommer jusqu'au »</div>
+      </div>
+      <div class="p-actions">
+        <button class="a-sold" data-act="do-p" data-k="sold">${ic('check')}Vendu</button>
+        <button class="a-feat ${promoMode ? 'promo' : ''}" data-act="do-p" data-k="feature">${ic(promoMode ? 'tag' : 'up')}${p.featured ? 'Déjà en avant' : 'Mis en avant'}</button>
+        <button class="a-trash" data-act="do-p" data-k="trash">${ic('trash')}Jeté</button>
+      </div>`;
+  }
+
+  /* ---------- 3. Scan ---------- */
+  const SC = { idx: 0, state: 'aim', item: null, d: null, qty: 1, added: 0, rafale: true, timer: 0, editDate: false };
+  function barcodeSvg(ean) {
+    const digits = (ean || '0000000000000').replace(/\D/g, '');
+    let x = 0, bars = '';
+    const bar = w => { bars += `<rect x="${x}" y="0" width="${w}" height="40" fill="#151515"/>`; };
+    bar(1); x += 2; bar(1); x += 2;
+    for (const ch of digits) {
+      const n = +ch;
+      const pat = [1 + (n % 3), 1 + ((n + 1) % 2), 1 + ((n * 7) % 3), 1 + ((n + 2) % 2)];
+      pat.forEach((w, i) => { if (i % 2 === 0) bar(w); x += w; });
+    }
+    bar(1); x += 2; bar(1); x += 1;
+    return `<svg viewBox="0 0 ${x} 40" preserveAspectRatio="none" aria-hidden="true">${bars}</svg>`;
+  }
+  function openScan() {
+    closeOpen();
+    SC.added = 0;
+    show('main', 'scan');
+    startAim(true);
+  }
+  function closeScan() {
+    clearTimeout(SC.timer);
+    renderMain();
+    show('main');
+    const fresh = $('#V-home .row.flash');
+    if (fresh && S.tab === 'home') fresh.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+  function startAim(first) {
+    clearTimeout(SC.timer);
+    SC.state = 'aim';
+    SC.item = SCAN_QUEUE[SC.idx % SCAN_QUEUE.length];
+    SC.d = SC.item.read; SC.qty = 1; SC.editDate = false; SC.name = SC.item.name;
+    renderScan(true);
+    SC.timer = setTimeout(found, first ? 1300 : 1100);
+  }
+  function found() {
+    SC.state = 'found'; buzz();
+    $('#L-scan').classList.add('found');
+    $('#scan-msg').innerHTML = 'Code lu';
+    renderScanSheet();
+    requestAnimationFrame(() => $('#ssheet').classList.add('on'));
+  }
+  function manualEntry() {
+    clearTimeout(SC.timer);
+    SC.state = 'found';
+    SC.item = { name: '', brand: '', cat: 'Saisie manuelle', ean: null, price: 0, read: null, manual: true };
+    SC.d = null; SC.qty = 1; SC.name = '';
+    $('#L-scan').classList.add('found');
+    renderScanSheet();
+    requestAnimationFrame(() => { $('#ssheet').classList.add('on'); setTimeout(() => $('#s-name').focus(), 230); });
+  }
+  function renderScan(enter) {
+    const it = SC.item;
+    const L = $('#L-scan');
+    L.classList.remove('found');
+    L.innerHTML = `
+      <div class="cam" aria-hidden="true">
+        <div class="shelf"></div>
+        <div class="pack ${enter ? 'enter' : ''}" id="pack">
+          <div class="pack-brand">${esc(it.brand)}</div>
+          <div class="pack-name">${esc(it.name)}</div>
+          <div class="pack-bc">${barcodeSvg(it.ean)}</div>
+          <div class="pack-ean">${it.ean}</div>
+          ${it.read != null
+            ? `<div class="pack-date">À consommer jusqu'au : ${addDays(it.read).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}</div>`
+            : `<div class="pack-date missing">À consommer jusqu'au : ░░/░░/░░</div>`}
+        </div>
+        <div class="finder"><i></i><i></i><i></i><i></i><span class="beam"></span></div>
+      </div>
+      <div class="scan-top">
+        <button class="cam-btn" data-act="scan-close">${ic('x', 'ico-sm')}Terminer</button>
+        <span class="cam-count" id="cam-count">${SC.added ? `${SC.added} ajouté${SC.added > 1 ? 's' : ''}` : ''}</span>
+        <button class="cam-btn ${SC.rafale ? 'on' : ''}" data-act="rafale" aria-pressed="${SC.rafale}">${ic('bolt', 'ico-sm')}Rafale</button>
+      </div>
+      <div class="scan-msg" id="scan-msg">Visez le code-barres<small>et la date sur l'emballage</small></div>
+      <div class="manual"><button data-act="manual">Pas de code-barres ? Saisie manuelle</button></div>
+      <div class="ssheet" id="ssheet"></div>`;
+    if (enter) requestAnimationFrame(() => requestAnimationFrame(() => { const pk = $('#pack'); pk && pk.classList.remove('enter'); }));
+  }
+  function renderScanSheet() {
+    const it = SC.item;
+    const read = it.read != null && !SC.editDate;
+    const chosen = [1, 2, 3, 7];
+    $('#ssheet').innerHTML = `
+      <div class="grab"></div>
+      <div>
+        <div class="s-name-wrap">
+          <input class="s-name" id="s-name" value="${esc(SC.name)}" placeholder="Nom du produit" aria-label="Nom du produit" autocomplete="off">
+          ${ic('pencil', 'ico-sm')}
+        </div>
+        <div class="s-ean">${it.manual ? 'Sans code-barres' : `<span class="ok-chip">${ic('check', 'ico-sm')}Reconnu</span> · EAN ${it.ean}`}</div>
+      </div>
+      ${read ? `
+        <div class="read-ok">
+          ${ic('check')}
+          <div class="grow"><div class="s-lbl">Date lue sur l'emballage</div><div class="s-date-big">${cap(fmtShort(addDays(SC.d)))}</div></div>
+          <button class="link" data-act="s-editdate">Changer</button>
+        </div>` : `
+        <div>
+          <div class="s-row" style="margin-bottom:8px"><span class="s-lbl">${it.read != null ? 'Choisir une autre date' : 'Date non lue · choisissez'}</span><span class="s-date-big" id="s-date-prev">${SC.d != null ? cap(fmtShort(addDays(SC.d))) : ''}</span></div>
+          <div class="chips">
+            ${chosen.map(n => `<button class="chip ${SC.d === n ? 'on' : ''}" data-act="s-day" data-v="${n}">+${n} j</button>`).join('')}
+            <label class="chip ${SC.d != null && !chosen.includes(SC.d) ? 'on' : ''}" aria-label="Choisir dans le calendrier">${ic('cal')}<input type="date" id="s-cal" min="${iso(TODAY)}" value="${SC.d != null ? iso(addDays(SC.d)) : ''}"></label>
+          </div>
+        </div>`}
+      <div class="s-row">
+        <span class="s-lbl">Quantité</span>
+        <div class="stepper"><button data-act="s-qty" data-v="-1" aria-label="Retirer un">${ic('minus')}</button><span class="v" id="s-qty">${SC.qty}</span><button data-act="s-qty" data-v="1" aria-label="Ajouter un">${ic('plus')}</button></div>
+      </div>
+      <button class="btn btn-primary btn-block" id="s-ok" data-act="s-ok" ${SC.d == null ? 'disabled' : ''}>${ic('check')}${SC.rafale ? 'Valider · produit suivant' : 'Valider'}</button>`;
+  }
+  function scanValidate() {
+    const name = ($('#s-name').value || '').trim() || 'Produit sans nom';
+    const it = SC.item;
+    const p = { id: 'n' + (++seq), name, cat: it.cat, d: SC.d, qty: SC.qty, price: it.price || 2.5, ean: it.manual ? null : it.ean, isNew: true };
+    S.products.push(p);
+    SC.added++; SC.idx++;
+    renderTabbar();
+    toast(`Ajouté : ${short(name)} ×${p.qty} · ${relDay(p.d).toLowerCase()}`);
+    if (SC.rafale) {
+      $('#ssheet').classList.remove('on');
+      setTimeout(() => startAim(false), 200);
+    } else closeScan();
+  }
+
+  /* ---------- 5. Économies ---------- */
+  function renderSavings() {
+    const w = S.period === 'week';
+    const base = BASE[S.period];
+    const sess = { normal: [0, 0], promo: [0, 0], front: [0, 0], trash: [0, 0] };
+    S.log.forEach(l => { sess[l.cat][0] += l.n; sess[l.cat][1] += l.eur; });
+    const tot = k => [base[k][0] + sess[k][0], base[k][1] + sess[k][1]];
+    const rows = [
+      { k: 'normal', label: 'Vendus au prix normal', sw: 'var(--blue)' },
+      { k: 'promo', label: 'Vendus en promo', sw: 'var(--apricot)' },
+      { k: 'front', label: 'Mis en avant puis vendus', sw: 'var(--blue-200)' },
+    ];
+    const savedN = rows.reduce((s, r) => s + tot(r.k)[0], 0);
+    const savedE = rows.reduce((s, r) => s + tot(r.k)[1], 0);
+    const today = sess.normal[1] + sess.promo[1] + sess.front[1];
+    const vals = (w ? WEEK_EUR : MONTH_EUR).slice();
+    vals[vals.length - 1] += today;
+    const labels = w
+      ? vals.map((_, i) => i === 6 ? 'Auj.' : cap(addDays(i - 6).toLocaleDateString('fr-FR', { weekday: 'short' })))
+      : vals.map((_, i) => { const end = addDays(-(3 - i) * 7), st = addDays(-(3 - i) * 7 - 6); return i === 3 ? 'Cette sem.' : `${st.getDate()}–${end.getDate()} ${end.toLocaleDateString('fr-FR', { month: 'short' })}`; });
+    const trash = tot('trash');
+    const rate = Math.round(savedN / (savedN + trash[0]) * 100);
+    $('#V-savings').innerHTML = `
+      <div class="scroll">
+        <div class="h-title"><h1>Économies</h1></div>
+        <div class="pad" style="margin-top:12px"><div class="seg">
+          <button class="${w ? 'on' : ''}" data-act="period" data-v="week">Cette semaine</button>
+          <button class="${!w ? 'on' : ''}" data-act="period" data-v="month">Ce mois</button>
+        </div></div>
+        <div class="kpis">
+          <div class="kpi"><div class="kpi-l">Produits sauvés</div><div class="kpi-v">${savedN}</div><div class="kpi-d">${rate} % des dates courtes</div></div>
+          <div class="kpi"><div class="kpi-l">Euros récupérés</div><div class="kpi-v">${eur(savedE).replace(/,\d\d/, m => `<span style="font-size:18px">${m}</span>`)}</div><div class="kpi-d">soit ${(savedE / 39).toLocaleString('fr-FR', { maximumFractionDigits: 1 })}× l’abonnement</div></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="card-t">Euros récupérés</span><span class="card-s">${w ? 'par jour' : 'par semaine'}</span></div>
+          ${chartSvg(vals, labels)}
+        </div>
+        <div class="card">
+          <div class="lines">
+            ${rows.map(r => { const t = tot(r.k); return `<div class="line"><span class="sw" style="background:${r.sw}"></span><span class="lbl">${r.label}</span><span class="q">${t[0]}</span><span class="e">${eur(t[1])}</span></div>`; }).join('')}
+            <div class="line"><span class="sw" style="background:var(--red)"></span><span class="lbl">Jetés (perte)</span><span class="q">${trash[0]}</span><span class="e" style="color:var(--red)">−${eur(trash[1])}</span></div>
+          </div>
+        </div>
+        <div class="list-end"></div>
+      </div>`;
+  }
+  function chartSvg(vals, labels) {
+    const W = 320, H = 170, top = 22, bottom = 26, n = vals.length;
+    const max = Math.ceil(Math.max(...vals) / 10) * 10 || 10;
+    const ch = H - top - bottom;
+    const slot = W / n, bw = Math.min(30, slot * 0.56);
+    const y = v => top + ch - (v / max) * ch;
+    let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graphique des euros récupérés">`;
+    [0, 0.5, 1].forEach(f => { const yy = y(max * f); s += `<line x1="0" x2="${W}" y1="${yy}" y2="${yy}" stroke="var(--line)" stroke-width="1" ${f ? 'stroke-dasharray="3 4"' : ''}/>`; });
+    vals.forEach((v, i) => {
+      const cx = slot * i + slot / 2, last = i === n - 1;
+      const h = Math.max(2, (v / max) * ch);
+      s += `<rect x="${cx - bw / 2}" y="${top + ch - h}" width="${bw}" height="${h}" rx="5" fill="${last ? 'var(--blue)' : 'var(--blue-200)'}"/>`;
+      s += `<text x="${cx}" y="${top + ch - h - 6}" text-anchor="middle" class="${last ? 'cur' : 'v'}">${Math.round(v)}</text>`;
+      s += `<text x="${cx}" y="${H - 6}" text-anchor="middle" ${last ? 'class="cur"' : ''}>${labels[i]}</text>`;
+    });
+    return s + '</svg>';
+  }
+
+  /* ---------- 6. Réglages ---------- */
+  function renderSettings() {
+    const modes = [
+      { k: 'promo', t: 'Promo', s: 'Dalia conseille une remise selon la date.' },
+      { k: 'rotation', t: 'Rotation', s: 'Dalia vous dit quoi placer devant en rayon.' },
+      { k: 'both', t: 'Les deux', s: 'Remise et mise en avant, selon le produit.' },
+    ];
+    const type = SHOP_TYPES.find(t => t.k === S.shop.type) || SHOP_TYPES[2];
+    const u = urgent();
+    const next = addDays(14);
+    $('#V-settings').innerHTML = `
+      <div class="scroll">
+        <div class="h-title"><h1>Réglages</h1></div>
+        <div class="set-label">Commerce</div>
+        <div class="box"><div class="box-row">
+          <span class="avatar">${ic(type.icon, 'ico-sm')}</span>
+          <div class="grow"><div class="opt-t">${esc(S.shop.name)}</div><div class="opt-s">${type.label} · ${esc(S.shop.email)}</div></div>
+        </div></div>
+
+        <div class="set-label">Mode d'écoulement</div>
+        <div class="opts" role="radiogroup">
+          ${modes.map(m => `<button class="opt ${S.mode === m.k ? 'on' : ''}" data-act="mode" data-v="${m.k}" role="radio" aria-checked="${S.mode === m.k}"><span class="radio"></span><span><div class="opt-t">${m.t}</div><div class="opt-s">${m.s}</div></span></button>`).join('')}
+        </div>
+
+        <div class="set-label">Alerte quotidienne</div>
+        <div class="box"><div class="box-row">
+          <span class="grow" style="white-space:nowrap">Heure de l'alerte</span>
+          <div class="stepper"><button data-act="alert" data-v="-30" aria-label="30 minutes plus tôt">${ic('minus', 'ico-sm')}</button><span class="v time-v" aria-live="polite">${S.alert}</span><button data-act="alert" data-v="30" aria-label="30 minutes plus tard">${ic('plus', 'ico-sm')}</button></div>
+        </div></div>
+        <div class="notif">
+          <span class="brand-mark">${ic('leaf')}</span>
+          <div><b>Dalia</b> · ${S.alert.replace(':', ' h ')}<br>${u.length ? `${u.length} produit${u.length > 1 ? 's' : ''} à traiter aujourd'hui : ${u.slice(0, 2).map(p => short(p.name)).join(', ')}${u.length > 2 ? '…' : ''}` : 'Rien d’urgent aujourd’hui.'}</div>
+        </div>
+
+        <div class="set-label">Abonnement</div>
+        <div class="box">
+          <div class="box-row">
+            <div class="grow"><span class="pill ok"><span class="dot green" style="width:8px;height:8px"></span>Actif — 39 € HT/mois</span>
+              <div class="opt-s" style="margin-top:8px">Dalia Commerce · prochain prélèvement le ${next.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}</div></div>
+          </div>
+          <div class="box-row"><button class="plain-btn link" data-act="manage">Gérer l'abonnement<span style="margin-left:auto">${ic('right', 'ico-sm')}</span></button></div>
+        </div>
+
+        <div class="pad" style="margin-top:18px"><button class="btn btn-ghost btn-block" data-act="logout">Se déconnecter</button></div>
+        <p class="fine" style="margin:14px 0 0">Dalia · maquette v0.1 · données factices</p>
+        <div class="list-end"></div>
+      </div>`;
+  }
+  function manageSheet(step) {
+    if (step === 'cancel') {
+      openSheet(`
+        <div class="grab"></div>
+        <h2>Résilier l'abonnement ?</h2>
+        <p>Vos alertes s'arrêtent et l'accès à vos listes est bloqué. Vos ${active().length} produits suivis restent enregistrés si vous revenez.</p>
+        <button class="btn btn-primary btn-block" data-act="sheet-close">Garder mon abonnement</button>
+        <button class="btn btn-ghost btn-block btn-danger-text" data-act="cancel-sub">Confirmer la résiliation</button>`);
+      return;
+    }
+    openSheet(`
+      <div class="grab"></div>
+      <h2>Gérer l'abonnement</h2>
+      <div class="box" style="margin:0">
+        <div class="box-row">${ic('card')}<div class="grow"><div class="opt-t">Visa ···· 4821</div><div class="opt-s">Expire 09/28</div></div><button class="link">Modifier</button></div>
+        <div class="box-row">${ic('doc')}<div class="grow"><div class="opt-t">Factures</div><div class="opt-s">${cap(addDays(-21).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }))} · 46,80 € TTC</div></div>${ic('right', 'ico-sm')}</div>
+      </div>
+      <button class="btn btn-ghost btn-block btn-danger-text" data-act="manage-cancel">Résilier l'abonnement</button>
+      <button class="btn btn-block" data-act="sheet-close" style="height:48px;color:var(--muted)">Fermer</button>`);
+  }
+
+  /* ---------- 7. Abonnement inactif ---------- */
+  function renderInactive() {
+    $('#L-inactive').innerHTML = `
+      <div class="scroll" style="display:flex;flex-direction:column">
+        <div class="locked">
+          <div class="lock">${ic('lock', 'ico-lg')}</div>
+          <div>
+            <span class="pill off" style="margin-bottom:12px">Abonnement inactif</span>
+            <h1>L'accès à Dalia est suspendu</h1>
+          </div>
+          <p>Vos alertes ne sont plus envoyées. Vos ${active().length} produits suivis et votre historique d'économies sont conservés : tout revient dès la réactivation.</p>
+          <div class="box">
+            <div class="box-row"><div class="grow"><div class="opt-t">Dalia Commerce</div><div class="opt-s">Sans engagement</div></div><span class="opt-t num">39 € HT/mois</span></div>
+          </div>
+          <button class="btn btn-primary btn-block" data-act="reactivate" id="reactivate">Réactiver mon abonnement</button>
+          <button class="btn btn-block" data-act="logout" style="height:48px;color:var(--muted)">Se déconnecter</button>
+        </div>
+      </div>`;
+  }
+
+  /* ---------- Feuille & toast ---------- */
+  function openSheet(html) { $('#sheet').innerHTML = html; $('#backdrop').classList.add('on'); $('#sheet').classList.add('on'); }
+  function closeSheet() { $('#backdrop').classList.remove('on'); $('#sheet').classList.remove('on'); }
+  let toastT = 0;
+  function toast(msg, undo) {
+    const t = $('#toast');
+    t.innerHTML = `<span class="msg">${esc(msg)}</span>${undo ? '<button data-act="undo">Annuler</button>' : ''}`;
+    t.classList.add('on');
+    clearTimeout(toastT);
+    toastT = setTimeout(() => t.classList.remove('on'), undo ? 4000 : 2200);
+  }
+
+  /* ---------- Événements ---------- */
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-act], [data-go]');
+    if (!b) return;
+    if (b.dataset.go) { protoGo(b.dataset.go); return; }
+    const v = b.dataset.v;
+    switch (b.dataset.act) {
+      case 'auth': S.authMode = v; renderLogin(); break;
+      case 'stype': S.signupType = v; document.querySelectorAll('.type').forEach(x => { x.classList.toggle('on', x.dataset.v === v); x.setAttribute('aria-pressed', x.dataset.v === v); }); break;
+      case 'tab': closeOpen(); S.tab = v; renderMain(); $('#V-' + v + ' .scroll') && ($('#V-' + v + ' .scroll').scrollTop = 0); syncProto(); break;
+      case 'hint': S.hint = false; renderHome(); break;
+      case 'do': act(b.dataset.id, b.dataset.k); break;
+      case 'do-p': act(S.productId, b.dataset.k, true); break;
+      case 'close-product': renderMain(); show('main'); break;
+      case 'pqty': { const p = find(S.productId); p.qty = Math.max(1, p.qty + +v); renderProduct(); break; }
+      case 'scan': openScan(); break;
+      case 'scan-close': closeScan(); break;
+      case 'rafale': SC.rafale = !SC.rafale; b.classList.toggle('on', SC.rafale); b.setAttribute('aria-pressed', SC.rafale); if (SC.state === 'found') renderScanSheet(); break;
+      case 'manual': manualEntry(); break;
+      case 's-day': SC.d = +v; renderScanSheet(); break;
+      case 's-editdate': SC.editDate = true; renderScanSheet(); break;
+      case 's-qty': SC.qty = Math.max(1, SC.qty + +v); $('#s-qty').textContent = SC.qty; break;
+      case 's-ok': scanValidate(); break;
+      case 'alert': {
+        const [h, m] = S.alert.split(':').map(Number);
+        const t = (h * 60 + m + +v + 1440) % 1440;
+        S.alert = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+        const sc = $('#V-settings .scroll').scrollTop; renderSettings(); $('#V-settings .scroll').scrollTop = sc;
+        break;
+      }
+      case 'period': S.period = v; renderSavings(); break;
+      case 'mode': S.mode = v; renderMain(); toast(v === 'promo' ? 'Mode promo activé' : v === 'rotation' ? 'Mode rotation activé' : 'Promo et rotation activées'); break;
+      case 'manage': manageSheet(); break;
+      case 'manage-cancel': manageSheet('cancel'); break;
+      case 'cancel-sub': closeSheet(); S.sub = 'inactive'; route(); break;
+      case 'sheet-close': closeSheet(); break;
+      case 'reactivate': {
+        b.disabled = true; b.textContent = 'Réactivation…';
+        setTimeout(() => { S.sub = 'active'; S.tab = 'home'; route(); toast('Abonnement réactivé. Bon retour !'); }, 700);
+        break;
+      }
+      case 'logout': closeSheet(); S.logged = false; S.authMode = 'login'; route(); break;
+      case 'undo': if (lastUndo) { lastUndo(); lastUndo = null; } $('#toast').classList.remove('on'); break;
+    }
+  });
+  $('#backdrop').addEventListener('click', closeSheet);
+  document.addEventListener('input', e => { if (e.target.id === 's-name') SC.name = e.target.value; });
+  document.addEventListener('submit', e => {
+    if (e.target.id !== 'auth-form') return;
+    e.preventDefault();
+    if (S.authMode === 'signup') {
+      const name = ($('#f-shop').value || '').trim();
+      const email = ($('#f-email').value || '').trim();
+      if (name) S.shop.name = name;
+      if (email) S.shop.email = email;
+      S.shop.type = S.signupType;
+    }
+    S.logged = true; S.tab = 'home'; route(); nudgeFirstRow();
+  });
+  document.addEventListener('change', e => {
+    const t = e.target;
+    if (t.id === 'p-date' && t.value) { find(S.productId).d = offsetFromIso(t.value); renderProduct(); }
+    if (t.id === 's-cal' && t.value) { SC.d = Math.max(0, offsetFromIso(t.value)); renderScanSheet(); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if ($('#sheet').classList.contains('on')) closeSheet();
+    else if ($('#L-product').classList.contains('on')) { renderMain(); show('main'); }
+    else if ($('#L-scan').classList.contains('on')) closeScan();
+  });
+
+  /* ---------- Panneau maquette (bureau) ---------- */
+  const SCREENS = [
+    ['login', 'Connexion / compte'], ['home', 'À traiter'], ['scan', 'Scan'], ['product', 'Fiche produit'],
+    ['savings', 'Économies'], ['settings', 'Réglages'], ['inactive', 'Abonnement inactif'],
+  ];
+  function currentScreen() {
+    const on = k => $('#L-' + k).classList.contains('on');
+    if (on('login')) return 'login';
+    if (on('inactive')) return 'inactive';
+    if (on('scan')) return 'scan';
+    if (on('product')) return 'product';
+    return S.tab;
+  }
+  function syncProto() {
+    const cur = currentScreen();
+    $('#proto-list').innerHTML = SCREENS.map(([k, l], i) => `<button data-go="${k}" class="${cur === k ? 'on' : ''}"><span class="n">${i + 1}</span>${l}</button>`).join('');
+  }
+  function protoGo(k) {
+    closeSheet(); clearTimeout(SC.timer);
+    if (k === 'reset') { S = fresh(); SC.idx = 0; route(); return; }
+    if (k === 'login') { S.logged = false; route(); return; }
+    S.logged = true;
+    if (k === 'inactive') { S.sub = 'inactive'; route(); return; }
+    S.sub = 'active';
+    if (['home', 'savings', 'settings'].includes(k)) { S.tab = k; route(); return; }
+    S.tab = 'home'; renderMain();
+    if (k === 'scan') openScan();
+    if (k === 'product') openProduct((active().find(p => p.d === 1) || active()[0]).id);
+  }
+
+  route();
+})();
+</script>
+</body>
+</html>
