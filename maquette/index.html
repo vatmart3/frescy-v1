@@ -241,13 +241,14 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .swipe + .swipe { border-top: 1px solid var(--line); }
 .swipe-actions { position: absolute; inset: 0 0 0 auto; display: flex; }
 .swipe-actions button {
-  width: 84px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  width: 78px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   font-size: 15px; line-height: 1.1; font-weight: 600; color: #fff; text-align: center; padding: 0 4px;
 }
 .act-sold { background: var(--green); }
 .act-feat { background: var(--blue); }
 .act-feat.promo { background: var(--apricot); color: var(--navy) !important; }
 .act-trash { background: var(--red); }
+.act-donate { background: var(--navy); }
 .row {
   position: relative; z-index: 1; background: var(--card); min-height: 68px; padding: 0 16px;
   display: flex; align-items: center; gap: 12px; touch-action: pan-y; user-select: none; -webkit-user-select: none;
@@ -291,7 +292,7 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .tile-date input[type="date"] { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
 .tile .stepper { gap: 4px; }
 .tile .stepper .v { min-width: 30px; }
-.p-actions { flex: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 12px var(--g) 16px; border-top: 1px solid var(--line); background: var(--card); }
+.p-actions { flex: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px var(--g) 16px; border-top: 1px solid var(--line); background: var(--card); }
 .p-actions button { min-height: 64px; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-weight: 600; font-size: 15px; border: 1px solid var(--line-strong); background: var(--card); }
 .p-actions button:hover { border-color: var(--muted); }
 .p-actions button:active { transform: scale(.97); }
@@ -299,6 +300,15 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .a-feat { color: var(--blue); }
 .a-feat.promo { color: var(--apricot-ink); background: var(--apricot-50) !important; border-color: var(--apricot-line) !important; }
 .a-trash { color: var(--red); }
+.a-donate { color: var(--navy); }
+.p-actions button { line-height: 1.15; text-align: center; padding: 6px 2px; }
+.tag-ddm { height: 26px; padding: 0 8px; background: var(--bg-deep); color: var(--navy); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.tag-dlc { height: 26px; padding: 0 8px; background: var(--blue-50); color: var(--blue); }
+.dtype { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; background: var(--card); flex: none; }
+.dtype button { min-height: 48px; min-width: 60px; padding: 0 12px; font-weight: 700; font-size: 15px; color: var(--muted); }
+.dtype button + button { border-left: 1px solid var(--line-strong); }
+.dtype button.on { background: var(--blue-50); color: var(--blue); }
+.p-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 
 /* Économies */
 .big { font-size: 64px; line-height: 1; font-weight: 700; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
@@ -352,7 +362,8 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .s-name-wrap:focus-within { border-color: var(--blue); }
 .s-name { flex: 1; min-width: 0; height: 48px; border: 0; background: none; font-size: 20px; font-weight: 700; }
 .s-name:focus { outline: none; }
-.s-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--green); font-weight: 600; font-size: 15px; margin-top: 8px; }
+.s-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--green); font-weight: 600; font-size: 15px; }
+.s-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
 .s-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .s-lbl { font-size: 15px; font-weight: 600; color: var(--muted); }
 .s-date { font-size: 17px; font-weight: 700; }
@@ -396,8 +407,9 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .strip-link:hover { color: #fff; }
 .dapp { flex: 1; display: flex; min-height: 0; position: relative; overflow: hidden; }
 .side { flex: none; width: 256px; background: var(--card); border-right: 1px solid var(--line); display: flex; flex-direction: column; padding: 24px 16px 20px; gap: 28px; }
-.side-shop { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
-.side-shop .opt-t { font-size: 16px; line-height: 1.25; }
+.side-head { display: flex; flex-direction: column; gap: 14px; padding: 4px 12px 0; }
+.side-head .brand { font-size: 28px; }
+.side-head .opt-t { font-size: 16px; line-height: 1.25; }
 .nav { display: flex; flex-direction: column; gap: 4px; }
 .nav button { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 12px; border-radius: 12px; font-weight: 600; font-size: 15px; color: var(--muted); position: relative; transition: background var(--t), color var(--t); }
 .nav button:hover { background: var(--hover); color: var(--navy); }
@@ -445,6 +457,13 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .tbtn.feat { color: var(--blue); }
 .tbtn.feat.promo { color: var(--apricot-ink); background: var(--apricot-50); border-color: var(--apricot-line); }
 .tbtn.trash { color: var(--red); }
+.tbtn.donate { color: var(--navy); }
+.tbtn.apply { color: var(--blue); background: var(--blue-50); border-color: var(--blue-200); }
+.tbtn.apply.promo { color: var(--apricot-ink); background: var(--apricot-50); border-color: var(--apricot-line); }
+.tbtn.apply:hover { border-color: currentColor; }
+.acell { display: flex; align-items: center; gap: 4px 10px; flex-wrap: wrap; }
+.tbtn-link { min-height: 40px; padding: 0 2px; color: var(--muted); font-weight: 600; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
+.tbtn-link:hover { color: var(--navy); }
 .tbtn:disabled { opacity: .45; pointer-events: none; }
 .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .search { position: relative; flex: 1; min-width: 200px; max-width: 380px; }
@@ -507,11 +526,15 @@ kbd { font: 600 13px var(--font); border: 1px solid var(--line-strong); border-b
   .dapp.panel-open .dmain { margin-right: 420px; }
   .dapp.panel-open .dinner { padding-left: 32px; padding-right: 32px; }
   .dapp.panel-open .dt .opt-col { display: none; }
+  .dapp.panel-open .tbtn .lbl { display: none; }
+  .dapp.panel-open .tbtn { padding: 0 10px; }
+  .dapp.panel-open .dt th, .dapp.panel-open .dt td { padding-left: 12px; padding-right: 12px; }
 }
 @media (max-width: 1279px) {
   .side { width: 80px; padding: 20px 12px; align-items: center; }
-  .side .lbl, .side-shop .txt, .side-foot .txt { display: none; }
-  .side-shop { padding: 0; }
+  .side .lbl, .side-head .txt, .side-foot .txt { display: none; }
+  .side-head { padding: 0; align-items: center; }
+  .side-head .brand { font-size: 16px; }
   .nav button { width: 56px; justify-content: center; padding: 0; }
   .nav .nbadge { position: absolute; top: 2px; right: 0; margin: 0; min-width: 20px; height: 20px; font-size: 12px; padding: 0 5px; }
   .side-foot button { width: 56px; height: 48px; justify-content: center; padding: 0; }
@@ -640,6 +663,7 @@ body[data-view="desk"] .stage { display: none; }
     bread: '<path d="M4 12.5C4 8.4 7.6 6 12 6s8 2.4 8 6.5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18v-5.5Z"/><path d="M9 9.5l1.2 3M12.5 9l.6 3.3M16 9.8l-.6 2.8"/>',
     meat: '<path d="M14.5 4.5c3 0 5.5 2.4 5.5 5.6 0 4.3-4.6 8.4-9.2 8.4-2.2 0-3.3-1.3-4.6-1.3L4.3 19.1a1 1 0 0 1-1.4-1.4l2-1.9C5 14.5 4 13.4 4 11.6c0-4 5.5-7.1 10.5-7.1Z"/><circle cx="13.5" cy="10.5" r="2"/>',
     basket: '<path d="M3.5 10h17l-1.6 8.6a2 2 0 0 1-2 1.6H7.1a2 2 0 0 1-2-1.6L3.5 10Z"/><path d="M8 10l3-6M16 10l-3-6M9.5 14v2.5M14.5 14v2.5"/>',
+    heart: '<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.1a4.3 4.3 0 0 1 7.5 2.7C19.5 15.4 12 20 12 20Z"/>',
     leaf: '<path d="M12 21c-4.5-2.2-7-5.7-7-10a7 7 0 0 1 14 0c0 4.3-2.5 7.8-7 10Z"/><path d="M12 21V11"/>',
   };
   const ic = (k, cls = '') => `<svg class="ico ${cls}" viewBox="0 0 24 24" aria-hidden="true">${P[k]}</svg>`;
@@ -665,9 +689,12 @@ body[data-view="desk"] .stage { display: none; }
     { id: 'p11', name: 'Jambon cru', pack: '6 tranches', cat: 'Charcuterie', d: 6, qty: 4, price: 4.90, ean: '3 266 980 202 806' },
     { id: 'p12', name: 'Fromage frais nature', pack: '500 g', cat: 'Crèmerie', d: 8, qty: 2, price: 3.10, ean: '3 523 230 011 527' },
     { id: 'p13', name: 'Yaourts aux fruits', pack: '8×125 g', cat: 'Crèmerie', d: 9, qty: 6, price: 3.60, ean: '3 033 491 118 044' },
+    { id: 'p14', name: 'Zézettes de Sète', pack: '200 g', cat: 'Épicerie sucrée', d: -2, qty: 5, price: 3.90, ean: '3 770 004 512 019', dt: 'DDM' },
+    { id: 'p15', name: 'Jus de raisin', pack: '1 L', cat: 'Boissons', d: 2, qty: 3, price: 2.70, ean: '3 254 381 027 446', dt: 'DDM' },
   ];
   const SCAN_QUEUE = [
     { name: 'Yaourt au lait de brebis', pack: '4×125 g', brand: 'Bergerie d’Oc', cat: 'Crèmerie', ean: '3 760 245 810 336', price: 3.20, read: 5 },
+    { name: 'Zézettes de Sète', pack: '200 g', brand: 'Biscuiterie du Mont Saint-Clair', cat: 'Épicerie sucrée', ean: '3 770 004 512 026', price: 3.90, read: 45, dt: 'DDM' },
     { name: 'Sandwich poulet-crudités', pack: 'Fait maison', brand: 'Fait maison', cat: 'Snacking', ean: '2 000 410 000 128', price: 4.20, read: null },
     { name: 'Jambon blanc', pack: '4 tranches', brand: 'Charcuterie du Midi', cat: 'Charcuterie', ean: '3 266 980 117 452', price: 3.45, read: null },
     { name: 'Fromage frais de chèvre', pack: '150 g', brand: 'Fromagerie des Garrigues', cat: 'Crèmerie', ean: '3 523 230 024 718', price: 2.95, read: 6 },
@@ -677,8 +704,8 @@ body[data-view="desk"] .stage { display: none; }
   const WEEK_EUR = [18.4, 24.1, 12.9, 31.2, 22.6, 27.8, 5.6];
   const MONTH_EUR = [131.2, 158.9, 154.6, 142.6];
   const BASE = {
-    week: { normal: [17, 71.2], promo: [14, 46.9], front: [7, 24.5], trash: [4, 9.8] },
-    month: { normal: [69, 262.4], promo: [58, 213.1], front: [29, 111.8], trash: [15, 38.6] },
+    week: { normal: [17, 71.2], promo: [14, 46.9], front: [7, 24.5], donated: [3, 8.7], trash: [4, 9.8] },
+    month: { normal: [69, 262.4], promo: [58, 213.1], front: [29, 111.8], donated: [11, 31.4], trash: [15, 38.6] },
   };
   const SUB_PRICE = 39;
 
@@ -712,6 +739,18 @@ body[data-view="desk"] .stage { display: none; }
   const toneOf = d => d <= 0 ? 'red' : d <= 3 ? 'orange' : 'green';
   const dueText = d => d < 0 ? 'Périmé' : d === 0 ? 'Ce soir' : d === 1 ? 'Demain' : cap(addDays(d).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' }));
   const statusText = d => d < 0 ? (d === -1 ? 'Périmé depuis hier' : `Périmé depuis ${-d} jours`) : d === 0 ? 'Expire ce soir' : d === 1 ? 'Expire demain' : `Expire dans ${d} jours`;
+  // DLC « à consommer jusqu'au » : périmé = invendable. DDM « de préférence avant » : reste vendable une fois dépassée.
+  const DT_LABEL = { DLC: "À consommer jusqu'au", DDM: 'De préférence avant' };
+  const dtOf = p => p.dt || 'DLC';
+  const isDDM = p => dtOf(p) === 'DDM';
+  const expiredDLC = p => p.d < 0 && !isDDM(p);
+  const dueTone = p => p.d < 0 && isDDM(p) ? 'orange' : toneOf(p.d);
+  const dueTextP = p => p.d < 0 ? (isDDM(p) ? 'Dépassée' : 'Périmé') : dueText(p.d);
+  const statusTextP = p => !isDDM(p) ? statusText(p.d)
+    : p.d < 0 ? (p.d === -1 ? 'DDM dépassée depuis hier' : `DDM dépassée depuis ${-p.d} jours`)
+    : p.d === 0 ? "DDM aujourd'hui" : p.d === 1 ? 'DDM demain' : `DDM dans ${p.d} jours`;
+  const canDonateAlt = p => !isDDM(p) && p.d === 0 && !p.featured;
+  const dtypeSeg = (cur, act) => `<div class="dtype" role="group" aria-label="Type de date">${['DLC', 'DDM'].map(t => `<button class="${cur === t ? 'on' : ''}" data-act="${act}" data-v="${t}" aria-pressed="${cur === t}" title="${DT_LABEL[t]}">${t}</button>`).join('')}</div>`;
   const discountFor = d => d <= 0 ? 40 : d === 1 ? 30 : d <= 3 ? 20 : 0;
   const active = () => S.products.filter(p => !p.done);
   const urgent = () => active().filter(p => p.d <= 0 && !p.featured);
@@ -723,7 +762,7 @@ body[data-view="desk"] .stage { display: none; }
 
   // Une seule action recommandée, selon la date et le mode du commerce
   function recommend(p) {
-    if (p.d < 0) return { kind: 'remove' };
+    if (expiredDLC(p)) return { kind: 'remove' };
     const off = discountFor(p.d);
     if (!off) return { kind: 'wait' };
     if (S.mode === 'promo') return { kind: 'promo', off };
@@ -754,17 +793,19 @@ body[data-view="desk"] .stage { display: none; }
     if (r.kind === 'wait') return `
       <div class="reco wait"><div class="reco-head"><span class="reco-ico">${ic('bell')}</span><div><div class="reco-k">Action conseillée</div><div class="reco-t">Rien à faire pour l'instant</div><div class="reco-s">Frescy vous préviendra le ${fmtShort(addDays(p.d - 3)).toLowerCase()}.</div></div></div></div>`;
     const promo = r.kind === 'promo';
+    const kick = p.d < 0 ? 'DDM dépassée · encore vendable' : 'Action conseillée';
+    const alt = canDonateAlt(p) ? `<button class="btn btn-ghost btn-block" data-act="${go}" data-k="donate" data-id="${p.id}">${ic('heart')}Ou donner à une association</button>` : '';
     const done = p.featured
       ? `<div class="reco-done">${ic('check')}${p.promo ? `Promo ${pct(p.promo)} en place` : 'Placé devant en rayon'}</div>`
       : `<button class="btn ${promo ? 'btn-promo' : 'btn-primary'} btn-block" data-act="${go}" data-k="feature" data-id="${p.id}">${ic('check')}C'est fait</button>`;
     return promo ? `
-      <div class="reco promo"><div class="reco-head"><span class="reco-ico">${ic('tag')}</span><div><div class="reco-k">Action conseillée</div><div class="reco-t">Mettre à ${pct(r.off)}</div><div class="reco-s"><span class="price-old">${eur(p.price)}</span><b>${eur(p.price * (1 - r.off / 100))}</b> l'unité</div></div></div>${done}</div>` : `
-      <div class="reco front"><div class="reco-head"><span class="reco-ico">${ic('up')}</span><div><div class="reco-k">Action conseillée</div><div class="reco-t">Placer devant en rayon</div><div class="reco-s">À hauteur des yeux, devant les dates plus longues.</div></div></div>${done}</div>`;
+      <div class="reco promo"><div class="reco-head"><span class="reco-ico">${ic('tag')}</span><div><div class="reco-k">${kick}</div><div class="reco-t">Mettre à ${pct(r.off)}</div><div class="reco-s"><span class="price-old">${eur(p.price)}</span><b>${eur(p.price * (1 - r.off / 100))}</b> l'unité</div></div></div>${done}${alt}</div>` : `
+      <div class="reco front"><div class="reco-head"><span class="reco-ico">${ic('up')}</span><div><div class="reco-k">${kick}</div><div class="reco-t">Placer devant en rayon</div><div class="reco-s">À hauteur des yeux, devant les dates plus longues.</div></div></div>${done}${alt}</div>`;
   }
 
   // Économies
   function savings() {
-    const sess = { normal: [0, 0], promo: [0, 0], front: [0, 0], trash: [0, 0] };
+    const sess = { normal: [0, 0], promo: [0, 0], front: [0, 0], donated: [0, 0], trash: [0, 0] };
     S.log.forEach(l => { sess[l.cat][0] += l.n; sess[l.cat][1] += l.eur; });
     const today = sess.normal[1] + sess.promo[1] + sess.front[1];
     const tot = per => { const o = {}; Object.keys(sess).forEach(k => { o[k] = [BASE[per][k][0] + sess[k][0], BASE[per][k][1] + sess[k][1]]; }); return o; };
@@ -806,17 +847,18 @@ body[data-view="desk"] .stage { display: none; }
     let msg, entry = null;
     if (kind === 'feature') {
       if (p.featured) return { msg: `${p.name} est déjà mis en avant`, undo: false };
-      if (p.d < 0) return { msg: `${p.name} est périmé : retirez-le du rayon`, undo: false };
+      if (expiredDLC(p)) return { msg: `${p.name} est périmé : retirez-le du rayon`, undo: false };
       p.promo = featureForm(p);
       p.featured = true;
       msg = p.promo ? `${p.name} · promo ${pct(p.promo)}` : `${p.name} · placé devant en rayon`;
     } else {
+      if (kind === 'donate' && expiredDLC(p)) return { msg: `${p.name} est périmé : don impossible, retirez-le du rayon`, undo: false };
       p.done = kind;
       const value = p.qty * (kind === 'sold' ? unitPrice(p) : p.price);
-      const cat = kind === 'trash' ? 'trash' : p.promo ? 'promo' : p.featured ? 'front' : 'normal';
+      const cat = kind === 'trash' ? 'trash' : kind === 'donate' ? 'donated' : p.promo ? 'promo' : p.featured ? 'front' : 'normal';
       entry = { id, cat, n: p.qty, eur: value };
       S.log.push(entry);
-      msg = kind === 'sold' ? `${p.name} · vendu, ${eur(value)} récupérés` : `${p.name} · jeté`;
+      msg = kind === 'sold' ? `${p.name} · vendu, ${eur(value)} récupérés` : kind === 'donate' ? `${p.name} · donné à une association` : `${p.name} · jeté`;
     }
     lastUndo = () => {
       Object.keys(p).forEach(k => delete p[k]); Object.assign(p, before);
@@ -948,12 +990,13 @@ body[data-view="desk"] .stage { display: none; }
         <div class="swipe-actions" aria-hidden="true">
           <button class="act-sold" data-act="do" data-k="sold" data-id="${p.id}" tabindex="-1">${ic('check')}Vendu</button>
           <button class="act-feat ${promo ? 'promo' : ''}" data-act="do" data-k="feature" data-id="${p.id}" tabindex="-1">${ic(promo ? 'tag' : 'up')}Mis en avant</button>
+          <button class="act-donate" data-act="do" data-k="donate" data-id="${p.id}" tabindex="-1">${ic('heart')}Donné</button>
           <button class="act-trash" data-act="do" data-k="trash" data-id="${p.id}" tabindex="-1">${ic('trash')}Jeté</button>
         </div>
-        <div class="row ${p.featured ? 'featured' : ''} ${p.isNew ? 'flash' : ''}" data-row="${p.id}" tabindex="0" role="button" aria-label="${esc(p.name)}, quantité ${p.qty}, ${statusText(p.d)}">
-          <span class="dot ${toneOf(p.d)}"></span>
+        <div class="row ${p.featured ? 'featured' : ''} ${p.isNew ? 'flash' : ''}" data-row="${p.id}" tabindex="0" role="button" aria-label="${esc(p.name)}, quantité ${p.qty}, ${statusTextP(p)}">
+          <span class="dot ${dueTone(p)}"></span>
           <span class="row-left"><span class="row-name">${esc(p.name)}</span><span class="row-qty">×${p.qty}</span></span>
-          <span class="row-due ${p.d < 0 ? 'red' : ''}">${featureTag(p)}${dueText(p.d)}</span>
+          <span class="row-due ${expiredDLC(p) ? 'red' : ''}">${isDDM(p) && p.d < 0 ? '<span class="tag tag-ddm">DDM</span>' : ''}${featureTag(p)}${dueTextP(p)}</span>
         </div>
       </div>`;
   }
@@ -978,7 +1021,7 @@ body[data-view="desk"] .stage { display: none; }
       <div class="scroll" id="home-scroll"><div class="page">
         <header><div class="top-sub">${esc(S.shop.name)}</div><h1 class="h1">${fmtLong(TODAY)}</h1></header>
         ${banner}
-        ${showHint ? `<div class="hint">${ic('info')}<span>Glissez une ligne vers la gauche pour la marquer Vendu, Mis en avant ou Jeté.</span><button data-act="hint" aria-label="Compris, masquer l'astuce">${ic('x')}</button></div>` : ''}
+        ${showHint ? `<div class="hint">${ic('info')}<span>Glissez une ligne vers la gauche pour la marquer Vendu, Mis en avant, Donné ou Jeté.</span><button data-act="hint" aria-label="Compris, masquer l'astuce">${ic('x')}</button></div>` : ''}
         ${sections || `<div class="empty">Aucun produit suivi.<br>Appuyez sur Scanner pour ajouter le premier.</div>`}
       </div></div>`;
     $('#home-scroll').scrollTop = sc;
@@ -987,7 +1030,7 @@ body[data-view="desk"] .stage { display: none; }
   const hintSeen = () => { if (!store.get('frescy.hintSeen')) store.set('frescy.hintSeen', '1'); };
 
   /* Glisser une ligne */
-  const ACT_W = 252;
+  const ACT_W = 312;
   let drag = null, openRow = null;
   const setX = (row, x) => { row.style.transform = x ? `translateX(${x}px)` : ''; };
   const closeOpen = () => { if (openRow) { setX(openRow, 0); openRow = null; } };
@@ -1038,6 +1081,7 @@ body[data-view="desk"] .stage { display: none; }
   function phoneAct(id, kind, fromProduct) {
     const res = applyAction(id, kind);
     if (!res) return;
+    if (!res.undo) { closeOpen(); phoneToast(res.msg); return; }
     hintSeen();
     const done = () => { openRow = null; renderMain(); phoneToast(res.msg, res.undo); };
     if (fromProduct) {
@@ -1056,18 +1100,18 @@ body[data-view="desk"] .stage { display: none; }
   function openProduct(id) { closeOpen(); S.productId = id; renderProduct(); show('main', 'product'); }
   function renderProduct() {
     const p = find(S.productId); if (!p) return;
-    const tone = toneOf(p.d);
+    const tone = dueTone(p);
     const promo = featureIsPromo(p);
     $('#L-product').innerHTML = `
       <div class="bar"><button class="icon-btn" data-act="close-product" aria-label="Retour">${ic('back')}</button><span class="bar-title">Fiche produit</span></div>
       <div class="scroll"><div class="page" style="padding-top:4px">
         <div>
           <h1 class="p-name">${esc(p.name)}</h1>
-          <span class="status ${tone}"><span class="dot ${tone}"></span>${statusText(p.d)}</span>
+          <div class="p-meta"><span class="status ${tone}"><span class="dot ${tone}"></span>${statusTextP(p)}</span>${dtypeSeg(dtOf(p), 'set-dt')}</div>
         </div>
         ${recoCard(p, 'phone')}
         <div class="tiles">
-          <label class="tile tile-date"><span class="tile-l">Date limite</span><span class="tile-v">${fmtShort(addDays(p.d))}${ic('pencil', 'ico-sm')}</span>
+          <label class="tile tile-date"><span class="tile-l">${DT_LABEL[dtOf(p)]}</span><span class="tile-v">${fmtShort(addDays(p.d))}${ic('pencil', 'ico-sm')}</span>
             <input type="date" id="p-date" value="${iso(addDays(p.d))}" aria-label="Modifier la date limite"></label>
           <div class="tile"><span class="tile-l">Quantité</span>
             <div class="stepper"><button data-act="pqty" data-v="-1" aria-label="Retirer un">${ic('minus', 'ico-sm')}</button><span class="v">${p.qty}</span><button data-act="pqty" data-v="1" aria-label="Ajouter un">${ic('plus', 'ico-sm')}</button></div></div>
@@ -1077,6 +1121,7 @@ body[data-view="desk"] .stage { display: none; }
       <div class="p-actions">
         <button class="a-sold" data-act="do-p" data-k="sold">${ic('check')}Vendu</button>
         <button class="a-feat ${promo ? 'promo' : ''}" data-act="do-p" data-k="feature">${ic(promo ? 'tag' : 'up')}Mis en avant</button>
+        <button class="a-donate" data-act="do-p" data-k="donate">${ic('heart')}Donné</button>
         <button class="a-trash" data-act="do-p" data-k="trash">${ic('trash')}Jeté</button>
       </div>`;
   }
@@ -1086,11 +1131,12 @@ body[data-view="desk"] .stage { display: none; }
       <div class="box-row"><span class="kv-l">Valeur en rayon</span><span class="kv-v">${eur(p.qty * unitPrice(p))}</span></div>
       <div class="box-row"><span class="kv-l">Format</span><span class="kv-v">${esc(p.pack || '—')}</span></div>
       <div class="box-row"><span class="kv-l">Catégorie</span><span class="kv-v">${esc(p.cat)}</span></div>
+      <div class="box-row"><span class="kv-l">Type de date</span><span class="kv-v">${dtOf(p)} · ${DT_LABEL[dtOf(p)].toLowerCase()}</span></div>
       <div class="box-row"><span class="kv-l">Code EAN</span><span class="kv-v">${p.ean || 'Sans code-barres'}</span></div>`;
   }
 
   /* 3. Scan */
-  const SC = { idx: 0, state: 'aim', item: null, d: null, qty: 1, added: 0, rafale: true, timer: 0, editDate: false, name: '' };
+  const SC = { idx: 0, state: 'aim', item: null, d: null, dt: 'DLC', qty: 1, added: 0, rafale: true, timer: 0, editDate: false, name: '' };
   function barcodeSvg(ean) {
     const digits = (ean || '0000000000000').replace(/\D/g, '');
     let x = 0, bars = '';
@@ -1115,7 +1161,7 @@ body[data-view="desk"] .stage { display: none; }
     clearTimeout(SC.timer);
     SC.state = 'aim';
     SC.item = SCAN_QUEUE[SC.idx % SCAN_QUEUE.length];
-    SC.d = SC.item.read; SC.qty = 1; SC.editDate = false; SC.name = SC.item.name;
+    SC.d = SC.item.read; SC.dt = SC.item.dt || 'DLC'; SC.qty = 1; SC.editDate = false; SC.name = SC.item.name;
     renderScan(true);
     SC.timer = setTimeout(found, first ? 1300 : 1100);
   }
@@ -1130,7 +1176,7 @@ body[data-view="desk"] .stage { display: none; }
     clearTimeout(SC.timer);
     SC.state = 'found';
     SC.item = { name: '', pack: '', brand: '', cat: 'Divers', ean: null, price: 0, read: null, manual: true };
-    SC.d = null; SC.qty = 1; SC.name = '';
+    SC.d = null; SC.dt = 'DLC'; SC.qty = 1; SC.name = '';
     $('#L-scan').classList.add('found');
     renderScanSheet();
     requestAnimationFrame(() => { $('#ssheet').classList.add('on'); setTimeout(() => $('#s-name').focus(), 230); });
@@ -1148,8 +1194,8 @@ body[data-view="desk"] .stage { display: none; }
           <div class="pack-bc">${barcodeSvg(it.ean)}</div>
           <div class="pack-ean">${it.ean}</div>
           ${it.read != null
-            ? `<div class="pack-date">À consommer jusqu'au : ${addDays(it.read).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}</div>`
-            : `<div class="pack-date missing">À consommer jusqu'au : ░░/░░/░░</div>`}
+            ? `<div class="pack-date">${it.dt === 'DDM' ? 'À consommer de préférence avant' : "À consommer jusqu'au"} : ${addDays(it.read).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' })}</div>`
+            : `<div class="pack-date missing">${it.dt === 'DDM' ? 'À consommer de préférence avant' : "À consommer jusqu'au"} : ░░/░░/░░</div>`}
         </div>
         <div class="finder"><i></i><i></i><i></i><i></i><span class="beam"></span></div>
       </div>
@@ -1171,11 +1217,11 @@ body[data-view="desk"] .stage { display: none; }
       <div class="grab"></div>
       <div>
         <div class="s-name-wrap"><input class="s-name" id="s-name" value="${esc(SC.name)}" placeholder="Nom du produit" aria-label="Nom du produit" autocomplete="off">${ic('pencil', 'ico-sm')}</div>
-        ${it.manual ? '' : `<div class="s-ok">${ic('check', 'ico-sm')}Code reconnu</div>`}
+        <div class="s-meta">${it.manual ? '<span class="s-lbl">Type de date</span>' : `<span class="s-ok">${ic('check', 'ico-sm')}Code reconnu</span>`}${dtypeSeg(SC.dt, 's-dt')}</div>
       </div>
       ${read ? `
         <div class="read-ok">${ic('check')}
-          <div class="grow"><div class="s-lbl" style="color:var(--green)">Date lue</div><div class="s-date">${fmtShort(addDays(SC.d))}</div></div>
+          <div class="grow"><div class="s-lbl" style="color:var(--green)">${SC.dt} lue</div><div class="s-date">${fmtShort(addDays(SC.d))}</div></div>
           <button class="link" data-act="s-editdate" style="padding:0 12px">Changer</button>
         </div>` : `
         <div>
@@ -1194,7 +1240,7 @@ body[data-view="desk"] .stage { display: none; }
   function scanValidate() {
     const name = ($('#s-name').value || '').trim() || 'Produit sans nom';
     const it = SC.item;
-    S.products.push({ id: 'n' + (++seq), name, pack: it.pack, cat: it.cat, d: SC.d, qty: SC.qty, price: it.price || 2.5, ean: it.manual ? null : it.ean, isNew: true });
+    S.products.push({ id: 'n' + (++seq), name, pack: it.pack, cat: it.cat, d: SC.d, qty: SC.qty, price: it.price || 2.5, ean: it.manual ? null : it.ean, dt: SC.dt, isNew: true });
     SC.added++; SC.idx++;
     renderTabbar();
     phoneToast(`Ajouté : ${name} ×${SC.qty}`);
@@ -1229,6 +1275,7 @@ body[data-view="desk"] .stage { display: none; }
       <div class="box">
         <div class="box-row"><span class="kv-l">Produits sauvés</span><span class="kv-v">${s.weekN}</span></div>
         ${r('normal', 'Vendus au prix normal')}${r('promo', 'Vendus en promo')}${r('front', 'Mis en avant puis vendus')}
+        <div class="box-row"><span class="kv-l">Donnés</span><span class="kv-v">${s.w.donated[0]} produit${s.w.donated[0] > 1 ? 's' : ''}</span></div>
         <div class="box-row"><span class="kv-l">Jetés (perte)</span><span class="kv-v" style="color:var(--red)">${s.w.trash[0]} · −${eur(s.w.trash[1])}</span></div>
       </div>
       <div class="box"><div class="box-row"><span class="kv-l">Ce mois-ci</span><span class="kv-v">${eur0(s.monthEur)} · ${s.monthN} produits</span></div></div>
@@ -1359,7 +1406,7 @@ body[data-view="desk"] .stage { display: none; }
     const type = SHOP_TYPES.find(t => t.k === S.shop.type) || SHOP_TYPES[2];
     const n = urgent().length;
     return `<aside class="side">
-      <div class="side-shop"><span class="brand-mark">${ic('leaf')}</span><div class="txt"><div class="opt-t">${esc(S.shop.name)}</div><div class="opt-s">${type.label} · Sète</div></div></div>
+      <div class="side-head"><div class="brand" role="img" aria-label="Frescy"><span class="brand-word" aria-hidden="true">Fresc<span class="brand-y">y<svg class="brand-leaf" viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 10.5C1.5 5.2 4.8 1.8 10.8 1.2 10.8 7.2 7.4 10.5 1.5 10.5Z"/><path d="M1.5 10.5 7.5 4.5" class="vein"/></svg></span></span></div><div class="txt"><div class="opt-t">${esc(S.shop.name)}</div><div class="opt-s">${type.label} · Sète</div></div></div>
       <nav class="nav" aria-label="Menu">
         ${DNAV.map(it => `<button class="${S.dpage === it.k ? 'on' : ''}" data-act="dnav" data-v="${it.k}" title="${it.label}" aria-current="${S.dpage === it.k ? 'page' : 'false'}">${ic(it.icon)}<span class="lbl">${it.label}</span>${it.k === 'todo' && n ? `<span class="nbadge">${n}</span>` : ''}</button>`).join('')}
       </nav>
@@ -1373,14 +1420,23 @@ body[data-view="desk"] .stage { display: none; }
     return todoPage();
   }
   function actBtns(p) {
-    const promo = featureIsPromo(p);
     return `<div class="tacts">
       <button class="tbtn sold" data-act="ddo" data-k="sold" data-id="${p.id}" title="Vendu" aria-label="Vendu">${ic('check', 'ico-sm')}<span class="lbl">Vendu</span></button>
-      <button class="tbtn feat ${promo ? 'promo' : ''}" data-act="ddo" data-k="feature" data-id="${p.id}" title="Mis en avant" aria-label="Mis en avant" ${p.featured || p.d < 0 ? 'disabled' : ''}>${ic(promo ? 'tag' : 'up', 'ico-sm')}<span class="lbl">Mis en avant</span></button>
+      <button class="tbtn donate" data-act="ddo" data-k="donate" data-id="${p.id}" title="Donné à une association" aria-label="Donné" ${expiredDLC(p) ? 'disabled' : ''}>${ic('heart', 'ico-sm')}<span class="lbl">Donné</span></button>
       <button class="tbtn trash" data-act="ddo" data-k="trash" data-id="${p.id}" title="Jeté" aria-label="Jeté">${ic('trash', 'ico-sm')}<span class="lbl">Jeté</span></button>
     </div>`;
   }
-  const dueCell = (p, rel) => `<span class="due ${toneOf(p.d)}"><span class="dot ${toneOf(p.d)}"></span>${p.d <= 1 ? dueText(p.d) : rel ? `Dans ${p.d} j` : fmtShort(addDays(p.d))}</span>`;
+  // Colonne « Action conseillée » : un bouton qui applique directement l'action
+  function actionCell(p) {
+    if (p.featured) return recoLabel(p);
+    const r = recommend(p);
+    if (r.kind === 'remove' || r.kind === 'wait') return recoLabel(p);
+    const promo = r.kind === 'promo';
+    const label = promo ? `Mettre à ${pct(r.off)}` : 'Placer devant';
+    const alt = canDonateAlt(p) ? `<button class="tbtn-link" data-act="ddo" data-k="donate" data-id="${p.id}">ou donner</button>` : '';
+    return `<div class="acell"><button class="tbtn apply ${promo ? 'promo' : ''}" data-act="ddo" data-k="feature" data-id="${p.id}" title="Appliquer : ${label}">${ic(promo ? 'tag' : 'up', 'ico-sm')}${label}</button>${alt}</div>`;
+  }
+  const dueCell = (p, rel) => `<span class="due ${dueTone(p)}"><span class="dot ${dueTone(p)}"></span>${p.d <= 1 ? dueTextP(p) : rel ? `Dans ${p.d} j` : fmtShort(addDays(p.d))}</span>`;
 
   /* 1. À traiter */
   function todoPage() {
@@ -1390,10 +1446,10 @@ body[data-view="desk"] .stage { display: none; }
       <div class="twrap"><table class="dt">
         <thead><tr><th>Produit</th><th class="r">Quantité</th><th>Échéance</th><th>Action conseillée</th><th class="r">Marquer comme</th></tr></thead>
         <tbody>${items.map(p => `<tr class="click ${S.panelId === p.id ? 'sel' : ''}" data-open="${p.id}">
-          <td><div class="pname">${esc(p.name)}</div><div class="ppack">${esc(p.pack || '')}</div></td>
+          <td><div class="pname">${esc(p.name)}</div><div class="ppack">${esc(p.pack || '')}${isDDM(p) ? ' <span class="tag tag-ddm">DDM</span>' : ''}</div></td>
           <td class="r num"><b>${p.qty}</b></td>
           <td>${dueCell(p)}</td>
-          <td>${recoLabel(p)}</td>
+          <td>${actionCell(p)}</td>
           <td>${actBtns(p)}</td></tr>`).join('')}</tbody>
       </table></div>`;
     const sec = (k, label, tone) => {
@@ -1424,9 +1480,10 @@ body[data-view="desk"] .stage { display: none; }
   const countText = () => { const n = filtered().length, all = active().length; return n === all ? `${all} produits suivis` : `${n} sur ${all} produits`; };
   function prodRows() {
     const rows = filtered();
-    if (!rows.length) return `<tr><td colspan="6" class="muted" style="padding:28px 16px;text-align:center">Aucun produit ne correspond.</td></tr>`;
+    if (!rows.length) return `<tr><td colspan="7" class="muted" style="padding:28px 16px;text-align:center">Aucun produit ne correspond.</td></tr>`;
     return rows.map(p => `<tr class="click ${S.panelId === p.id ? 'sel' : ''} ${p.isNew ? 'flash' : ''}" data-open="${p.id}">
       <td><div class="pname">${esc(p.name)}</div><div class="ppack">${esc(p.pack || '')}</div></td>
+      <td><span class="tag tag-${dtOf(p).toLowerCase()}" title="${DT_LABEL[dtOf(p)]}">${dtOf(p)}</span></td>
       <td class="opt-col">${esc(p.cat)}</td>
       <td class="r num"><b>${p.qty}</b></td>
       <td class="num">${fmtShort(addDays(p.d))}</td>
@@ -1458,7 +1515,7 @@ body[data-view="desk"] .stage { display: none; }
         <div class="addbar-foot"><span id="a-prev">${addPreview()}</span><span><kbd>Entrée</kbd> ajoute et enchaîne · <kbd>Échap</kbd> ferme${S.added ? ` · <b>${S.added} ajouté${S.added > 1 ? 's' : ''}</b>` : ''}</span></div>
       </div>` : ''}
       <div class="twrap"><table class="dt">
-        <thead><tr><th>Produit</th><th class="opt-col">Catégorie</th><th class="r">Quantité</th><th><button class="sortbtn" data-act="dsort" aria-label="Trier par date limite">Date limite${ic(S.dsort === 'asc' ? 'sortup' : 'sortdown', 'ico-sm')}</button></th><th>Échéance</th><th class="r opt-col">Prix</th></tr></thead>
+        <thead><tr><th>Produit</th><th>Type</th><th class="opt-col">Catégorie</th><th class="r">Quantité</th><th><button class="sortbtn" data-act="dsort" aria-label="Trier par date limite">Date limite${ic(S.dsort === 'asc' ? 'sortup' : 'sortdown', 'ico-sm')}</button></th><th>Échéance</th><th class="r opt-col">Prix</th></tr></thead>
         <tbody id="d-tbody">${prodRows()}</tbody>
       </table></div>`;
   }
@@ -1491,7 +1548,7 @@ body[data-view="desk"] .stage { display: none; }
     const name = $('#a-name').value.trim(), off = parseDay($('#a-date').value), qty = Math.max(1, parseInt($('#a-qty').value, 10) || 1);
     if (!name) { $('#a-name').focus(); return; }
     if (off == null) { $('#a-date').focus(); $('#a-prev').innerHTML = '<span style="color:var(--red)">Indiquez une date : +2, 25/10 ou « demain »</span>'; return; }
-    S.products.push({ id: 'n' + (++seq), name, pack: '', cat: 'Divers', d: off, qty, price: 2.5, ean: null, isNew: true });
+    S.products.push({ id: 'n' + (++seq), name, pack: '', cat: 'Divers', d: off, qty, price: 2.5, ean: null, dt: 'DLC', isNew: true });
     S.added++;
     S.addDraft = { name: '', date: $('#a-date').value, qty: '1' };
     S.dq = ''; S.dcat = '';
@@ -1505,14 +1562,14 @@ body[data-view="desk"] .stage { display: none; }
     const p = S.panelId && find(S.panelId);
     if (!p) return '';
     const promo = featureIsPromo(p);
-    const tone = toneOf(p.d);
+    const tone = dueTone(p);
     return `
       <div class="bar"><span class="bar-title">Fiche produit</span><button class="icon-btn" data-act="dclose" aria-label="Fermer la fiche">${ic('x')}</button></div>
       <div class="dpanel-body">
         <div><div class="opt-s" style="margin:0 0 4px">${esc(p.cat)}${p.pack ? ' · ' + esc(p.pack) : ''}</div><h2 class="p-name">${esc(p.name)}</h2>
-          <span class="status ${tone}"><span class="dot ${tone}"></span>${statusText(p.d)}</span></div>
+          <div class="p-meta"><span class="status ${tone}"><span class="dot ${tone}"></span>${statusTextP(p)}</span>${dtypeSeg(dtOf(p), 'set-dt')}</div></div>
         <div class="dgrid2">
-          <label class="dfield"><span>Date limite</span><input class="input" type="date" id="dp-date" value="${iso(addDays(p.d))}"></label>
+          <label class="dfield"><span>${DT_LABEL[dtOf(p)]}</span><input class="input" type="date" id="dp-date" value="${iso(addDays(p.d))}"></label>
           <div class="dfield"><span>Quantité</span><div class="stepper"><button data-act="dpqty" data-v="-1" aria-label="Retirer un">${ic('minus', 'ico-sm')}</button><span class="v">${p.qty}</span><button data-act="dpqty" data-v="1" aria-label="Ajouter un">${ic('plus', 'ico-sm')}</button></div></div>
         </div>
         ${recoCard(p, 'desk')}
@@ -1525,6 +1582,7 @@ body[data-view="desk"] .stage { display: none; }
       <div class="p-actions">
         <button class="a-sold" data-act="ddo" data-k="sold" data-id="${p.id}">${ic('check')}Vendu</button>
         <button class="a-feat ${promo ? 'promo' : ''}" data-act="ddo" data-k="feature" data-id="${p.id}">${ic(promo ? 'tag' : 'up')}Mis en avant</button>
+        <button class="a-donate" data-act="ddo" data-k="donate" data-id="${p.id}">${ic('heart')}Donné</button>
         <button class="a-trash" data-act="ddo" data-k="trash" data-id="${p.id}">${ic('trash')}Jeté</button>
       </div>`;
   }
@@ -1557,7 +1615,7 @@ body[data-view="desk"] .stage { display: none; }
         <div class="ptot"><div>Récupérés<b>${eur(s.monthEur)}</b></div><div>Produits sauvés<b>${s.monthN}</b></div><div>Pertes<b>${eur(m.trash[1])}</b></div></div>
         <h4>Répartition</h4>
         <table><thead><tr><th>Type</th><th>Produits</th><th>Montant</th></tr></thead><tbody>
-          ${row('Vendus au prix normal', 'normal')}${row('Vendus en promo', 'promo')}${row('Mis en avant puis vendus', 'front')}${row('Jetés (perte)', 'trash')}
+          ${row('Vendus au prix normal', 'normal')}${row('Vendus en promo', 'promo')}${row('Mis en avant puis vendus', 'front')}<tr><td>Donnés à une association</td><td>${m.donated[0]}</td><td>valeur ${eur(m.donated[1])}</td></tr>${row('Jetés (perte)', 'trash')}
         </tbody></table>
         <h4>Par semaine</h4>
         <table><thead><tr><th>Semaine</th><th>Récupérés</th></tr></thead><tbody>
@@ -1594,6 +1652,7 @@ body[data-view="desk"] .stage { display: none; }
   function deskAct(id, kind) {
     const res = applyAction(id, kind);
     if (!res) return;
+    if (!res.undo) { deskToast(res.msg); return; }
     if (kind !== 'feature' && S.panelId === id) S.panelId = null;
     deskRender();
     deskToast(res.msg, res.undo);
@@ -1632,6 +1691,8 @@ body[data-view="desk"] .stage { display: none; }
       case 'rafale': SC.rafale = !SC.rafale; b.classList.toggle('on', SC.rafale); b.setAttribute('aria-pressed', SC.rafale); if (SC.state === 'found') renderScanSheet(); break;
       case 'manual': manualEntry(); break;
       case 's-day': SC.d = +v; renderScanSheet(); break;
+      case 's-dt': SC.dt = v; renderScanSheet(); break;
+      case 'set-dt': { const p = find(curView === 'phone' ? S.productId : S.panelId); if (p) { p.dt = v; refresh(); } break; }
       case 's-editdate': SC.editDate = true; renderScanSheet(); break;
       case 's-qty': SC.qty = Math.max(1, SC.qty + +v); $('#s-qty').textContent = SC.qty; break;
       case 's-ok': scanValidate(); break;
