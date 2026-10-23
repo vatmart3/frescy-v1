@@ -625,6 +625,9 @@ body[data-view="desk"] .stage { display: none; }
 }
 /* safe-area:start — site en ligne : encoche et barre d'accueil des iPhone (l'aperçu Claude gère déjà ces marges) */
 @media (max-width: 767px) {
+  /* La page elle-même ne bouge jamais : sur iOS, seul le contenu des listes défile (pas de rebond de toute l'app) */
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
+  body { position: fixed; inset: 0; width: 100%; touch-action: manipulation; }
   .app { top: env(safe-area-inset-top, 0px); }
   .tabbar { height: calc(76px + env(safe-area-inset-bottom, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); }
   .p-actions { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
