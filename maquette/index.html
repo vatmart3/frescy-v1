@@ -798,7 +798,7 @@ body[data-view="desk"] .stage { display: none; }
     dpage: 'todo',
     shop: { name: 'Épicerie du Môle', type: 'epicerie', email: 'contact@epicerie-du-mole.fr' },
     mode: 'both',
-    alert: '07:30',
+    alert: /^([01]\d|2[0-3]):[0-5]\d$/.test(store.get('frescy.alert') || '') ? store.get('frescy.alert') : '07:30',
     sub: 'active',
     products: PRODUCTS0.map(p => ({ ...p })),
     log: [],
@@ -1441,55 +1441,97 @@ body[data-view="desk"] .stage { display: none; }
     { k: 'rotation', t: 'Rotation', s: 'Quoi placer devant en rayon.' },
     { k: 'both', t: 'Les deux', s: 'Frescy choisit selon le produit.' },
   ];
-  /* Notifications : vraies notifications système via le service worker */
-  let swReg = null, swFailed = false;
+  /* Notifications : abonnement Web Push et alerte quotidienne envoyée par le serveur (Supabase) */
+  const PUSH_API = 'https://rebtkphcqqiphbocgkvw.supabase.co/functions/v1/push';
+  let swReg = null, swFailed = false, pushSub = null, pushSyncT = 0;
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  const pushCall = (body, keepalive) => fetch(PUSH_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), keepalive: !!keepalive });
+  const b64uBytes = str => { const s = str.replace(/-/g, '+').replace(/_/g, '/'); return Uint8Array.from(atob(s + '='.repeat((4 - s.length % 4) % 4)), c => c.charCodeAt(0)); };
+  function alertSummary() {
+    const u = urgent();
+    return u.length
+      ? `${u.length} produit${u.length > 1 ? 's' : ''} à traiter aujourd'hui : ${u.slice(0, 2).map(p => p.name).join(', ')}${u.length > 2 ? '…' : ''}`
+      : 'Rien d’urgent aujourd’hui. Bonne journée !';
+  }
   function notifState() {
     // Sur iPhone, les notifications web n'existent que depuis l'icône de l'écran d'accueil
     if (isIOS && !isStandalone()) return 'ios-install';
-    if (!('Notification' in window) || !('serviceWorker' in navigator)) return 'unsupported';
+    if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) return 'unsupported';
     if (swFailed) return 'preview';
+    if (Notification.permission === 'granted') return pushSub ? 'subscribed' : 'granted';
     return Notification.permission;
   }
   function notifRows() {
     const st = notifState();
     const text = {
-      'ios-install': 'Sur iPhone, touchez Partager puis « Sur l\u2019écran d\u2019accueil », et ouvrez Frescy depuis cette icône.',
+      'ios-install': 'Sur iPhone, touchez Partager puis « Sur l’écran d’accueil », et ouvrez Frescy depuis cette icône.',
       unsupported: 'Ce navigateur ne gère pas les notifications.',
       preview: 'Disponible sur la version en ligne du site, pas dans cet aperçu.',
-      default: 'Pas encore activées sur cet appareil.',
-      denied: 'Bloquées. Autorisez Frescy dans les réglages de notifications de l\u2019appareil.',
-      granted: 'Frescy peut vous envoyer ses alertes.',
+      default: 'Recevez chaque matin les produits à traiter, même application fermée.',
+      granted: 'Autorisées. Activez l’alerte du matin pour la recevoir chaque jour.',
+      denied: 'Bloquées. Autorisez Frescy dans les réglages de notifications de l’appareil.',
+      subscribed: `Chaque jour à ${S.alert}, même application fermée.`,
     }[st];
-    const btn = st === 'default' ? `<button class="btn btn-primary btn-block" data-act="notif-enable">${ic('bell')}Activer les alertes</button>`
-      : st === 'granted' ? `<button class="btn btn-ghost btn-block" data-act="notif-test">${ic('bell')}Tester la notification</button>` : '';
-    return `<div class="box-row"><div class="grow"><div class="opt-t">Notifications sur cet appareil</div><div class="opt-s">${text}</div></div>${st === 'granted' ? '<span class="pill ok">Activées</span>' : ''}</div>
-      ${btn ? `<div class="box-row" style="padding:12px 16px">${btn}</div>` : ''}`;
+    let actions = '';
+    if (st === 'default' || st === 'granted') actions = `<button class="btn btn-primary btn-block" data-act="notif-enable">${ic('bell')}Activer les alertes</button>`;
+    if (st === 'subscribed') actions = `
+      <button class="btn btn-ghost btn-block" data-act="notif-test">${ic('bell')}Tester dans 10 secondes</button>
+      <p class="opt-s" style="margin:10px 0 0">Fermez Frescy ou verrouillez le téléphone : la notification arrive en haut de l’écran.</p>
+      <button class="link" data-act="notif-off" style="margin-top:4px">Désactiver les alertes</button>`;
+    return `<div class="box-row"><div class="grow"><div class="opt-t">Notifications sur cet appareil</div><div class="opt-s">${text}</div></div>${st === 'subscribed' ? '<span class="pill ok">Activées</span>' : ''}</div>
+      ${actions ? `<div class="box-row" style="padding:12px 16px;flex-direction:column;align-items:stretch;gap:0">${actions}</div>` : ''}`;
   }
+  // Envoie au serveur l'heure de l'alerte et le résumé du jour de ce téléphone
+  async function savePushSub(keepalive) {
+    if (!pushSub) return false;
+    const res = await pushCall({
+      action: 'subscribe', subscription: pushSub.toJSON(), alertTime: S.alert,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, shopName: S.shop.name, summary: alertSummary(),
+    }, keepalive);
+    return res.ok;
+  }
+  const schedulePushSync = () => { clearTimeout(pushSyncT); pushSyncT = setTimeout(() => { savePushSub().catch(() => {}); }, 600); };
   async function enableNotif() {
     try {
-      const r = await Notification.requestPermission();
+      if (Notification.permission !== 'granted' && await Notification.requestPermission() !== 'granted') {
+        refresh(); toast('Notifications refusées', false); return;
+      }
+      const reg = swReg || await navigator.serviceWorker.ready;
+      const { publicKey } = await (await fetch(PUSH_API + '?action=key')).json();
+      pushSub = await reg.pushManager.getSubscription()
+        || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64uBytes(publicKey) });
+      if (!await savePushSub()) throw new Error('enregistrement refusé');
       refresh();
-      toast(r === 'granted' ? 'Alertes activées sur cet appareil' : 'Notifications refusées', r === 'granted' ? undefined : false);
-    } catch (e) { toast('Impossible de demander l\u2019autorisation ici', false); }
+      toast(`Alerte activée : chaque jour à ${S.alert}`);
+    } catch (e) { refresh(); toast('Impossible d’activer l’alerte. Vérifiez la connexion et réessayez.', false); }
   }
   async function testNotif() {
     try {
-      const reg = swReg || await navigator.serviceWorker.ready;
-      const u = urgent();
-      const body = u.length
-        ? `${u.length} produit${u.length > 1 ? 's' : ''} à traiter aujourd'hui : ${u.slice(0, 2).map(p => p.name).join(', ')}${u.length > 2 ? '…' : ''}`
-        : 'Rien d\u2019urgent aujourd\u2019hui. Bonne journée !';
-      await reg.showNotification('Frescy', { body, icon: 'icon-192.png', badge: 'badge-96.png', tag: 'frescy-alerte', renotify: true, data: { url: location.href } });
-      toast('Notification envoyée');
-    } catch (e) { toast('La notification n\u2019a pas pu être affichée', false); }
+      await savePushSub();
+      const res = await pushCall({ action: 'test', endpoint: pushSub.endpoint, delay: 10 });
+      if (!res.ok) throw new Error('test refusé');
+      toast('Notification dans 10 secondes : fermez Frescy pour la voir arriver');
+    } catch (e) { toast('Le test n’a pas pu être envoyé. Vérifiez la connexion.', false); }
+  }
+  async function disableNotif() {
+    try {
+      const sub = pushSub; pushSub = null;
+      if (sub) { await pushCall({ action: 'unsubscribe', endpoint: sub.endpoint }); await sub.unsubscribe(); }
+      refresh(); toast('Alertes désactivées sur cet appareil');
+    } catch (e) { refresh(); toast('Désactivation incomplète, réessayez.', false); }
   }
   function registerSW() {
     if (!('serviceWorker' in navigator)) return;
     try {
-      navigator.serviceWorker.register('sw.js').then(r => { swReg = r; }, () => { swFailed = true; refreshIfSettings(); });
+      navigator.serviceWorker.register('sw.js').then(r => {
+        swReg = r;
+        if (!r.pushManager) return;
+        return r.pushManager.getSubscription().then(sub => { pushSub = sub; if (sub) savePushSub().catch(() => {}); refreshIfSettings(); });
+      }, () => { swFailed = true; refreshIfSettings(); });
     } catch (e) { swFailed = true; }
+    // En quittant l'app, on met à jour le résumé que recevra l'alerte du lendemain
+    document.addEventListener('visibilitychange', () => { if (document.hidden && pushSub) savePushSub(true).catch(() => {}); });
   }
   const refreshIfSettings = () => { if (S.logged && (S.dpage === 'settings' || ($('#L-settings') && $('#L-settings').classList.contains('on')))) refresh(); };
 
@@ -1912,10 +1954,13 @@ body[data-view="desk"] .stage { display: none; }
       case 'mode': S.mode = v; refresh(); toast(v === 'promo' ? 'Mode promo activé' : v === 'rotation' ? 'Mode rotation activé' : 'Promo et rotation activées'); break;
       case 'notif-enable': enableNotif(); break;
       case 'notif-test': testNotif(); break;
+      case 'notif-off': disableNotif(); break;
       case 'alert': {
         const [h, m] = S.alert.split(':').map(Number);
         const t = (h * 60 + m + +v + 1440) % 1440;
         S.alert = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+        store.set('frescy.alert', S.alert);
+        if (pushSub) schedulePushSync();
         refresh(); break;
       }
       case 'manage': curView === 'phone' ? openSheet(manageHtml('main', 'phone')) : openModal(manageHtml('main', 'desk')); break;
