@@ -62,6 +62,8 @@ const message = (row: any) => ({
 async function deliver(row: any) {
   const sub = { endpoint: row.endpoint, keys: { p256dh: row.p256dh, auth: row.auth } };
   const res = await sendPush(sub, message(row), await vapidKeys(), SUBJECT);
+  // Journal sans donnée personnelle : service de notification et code de réponse (201 = accepté)
+  console.log(`push ${new URL(row.endpoint).hostname} ${res.status}${res.ok ? '' : ' ' + res.detail}`);
   // 404 / 410 : le téléphone s'est désabonné, on oublie l'abonnement
   if (res.status === 404 || res.status === 410) await db.from('push_subscriptions').delete().eq('endpoint', row.endpoint);
   return res;
