@@ -6,6 +6,8 @@
 <title>Maquette Frescy</title>
 <meta name="theme-color" content="#1D3FBF">
 <meta name="apple-mobile-web-app-title" content="Frescy">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -1439,6 +1441,58 @@ body[data-view="desk"] .stage { display: none; }
     { k: 'rotation', t: 'Rotation', s: 'Quoi placer devant en rayon.' },
     { k: 'both', t: 'Les deux', s: 'Frescy choisit selon le produit.' },
   ];
+  /* Notifications : vraies notifications système via le service worker */
+  let swReg = null, swFailed = false;
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isStandalone = () => window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  function notifState() {
+    // Sur iPhone, les notifications web n'existent que depuis l'icône de l'écran d'accueil
+    if (isIOS && !isStandalone()) return 'ios-install';
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) return 'unsupported';
+    if (swFailed) return 'preview';
+    return Notification.permission;
+  }
+  function notifRows() {
+    const st = notifState();
+    const text = {
+      'ios-install': 'Sur iPhone, touchez Partager puis « Sur l\u2019écran d\u2019accueil », et ouvrez Frescy depuis cette icône.',
+      unsupported: 'Ce navigateur ne gère pas les notifications.',
+      preview: 'Disponible sur la version en ligne du site, pas dans cet aperçu.',
+      default: 'Pas encore activées sur cet appareil.',
+      denied: 'Bloquées. Autorisez Frescy dans les réglages de notifications de l\u2019appareil.',
+      granted: 'Frescy peut vous envoyer ses alertes.',
+    }[st];
+    const btn = st === 'default' ? `<button class="btn btn-primary btn-block" data-act="notif-enable">${ic('bell')}Activer les alertes</button>`
+      : st === 'granted' ? `<button class="btn btn-ghost btn-block" data-act="notif-test">${ic('bell')}Tester la notification</button>` : '';
+    return `<div class="box-row"><div class="grow"><div class="opt-t">Notifications sur cet appareil</div><div class="opt-s">${text}</div></div>${st === 'granted' ? '<span class="pill ok">Activées</span>' : ''}</div>
+      ${btn ? `<div class="box-row" style="padding:12px 16px">${btn}</div>` : ''}`;
+  }
+  async function enableNotif() {
+    try {
+      const r = await Notification.requestPermission();
+      refresh();
+      toast(r === 'granted' ? 'Alertes activées sur cet appareil' : 'Notifications refusées', r === 'granted' ? undefined : false);
+    } catch (e) { toast('Impossible de demander l\u2019autorisation ici', false); }
+  }
+  async function testNotif() {
+    try {
+      const reg = swReg || await navigator.serviceWorker.ready;
+      const u = urgent();
+      const body = u.length
+        ? `${u.length} produit${u.length > 1 ? 's' : ''} à traiter aujourd'hui : ${u.slice(0, 2).map(p => p.name).join(', ')}${u.length > 2 ? '…' : ''}`
+        : 'Rien d\u2019urgent aujourd\u2019hui. Bonne journée !';
+      await reg.showNotification('Frescy', { body, icon: 'icon-192.png', badge: 'badge-96.png', tag: 'frescy-alerte', renotify: true, data: { url: location.href } });
+      toast('Notification envoyée');
+    } catch (e) { toast('La notification n\u2019a pas pu être affichée', false); }
+  }
+  function registerSW() {
+    if (!('serviceWorker' in navigator)) return;
+    try {
+      navigator.serviceWorker.register('sw.js').then(r => { swReg = r; }, () => { swFailed = true; refreshIfSettings(); });
+    } catch (e) { swFailed = true; }
+  }
+  const refreshIfSettings = () => { if (S.logged && (S.dpage === 'settings' || ($('#L-settings') && $('#L-settings').classList.contains('on')))) refresh(); };
+
   function settingsBlocks() {
     const type = SHOP_TYPES.find(t => t.k === S.shop.type) || SHOP_TYPES[2];
     const next = addDays(14);
@@ -1450,7 +1504,8 @@ body[data-view="desk"] .stage { display: none; }
         <div class="opts" role="radiogroup">${MODES.map(m => `<button class="opt ${S.mode === m.k ? 'on' : ''}" data-act="mode" data-v="${m.k}" role="radio" aria-checked="${S.mode === m.k}"><span class="radio"></span><span><div class="opt-t">${m.t}</div><div class="opt-s">${m.s}</div></span></button>`).join('')}</div></div>
       <div class="set-block"><div class="set-label">Alerte quotidienne</div>
         <div class="box"><div class="box-row"><span class="grow">Heure de l'alerte</span>
-          <div class="stepper"><button data-act="alert" data-v="-30" aria-label="30 minutes plus tôt">${ic('minus', 'ico-sm')}</button><span class="v time" aria-live="polite">${S.alert}</span><button data-act="alert" data-v="30" aria-label="30 minutes plus tard">${ic('plus', 'ico-sm')}</button></div></div></div></div>
+          <div class="stepper"><button data-act="alert" data-v="-30" aria-label="30 minutes plus tôt">${ic('minus', 'ico-sm')}</button><span class="v time" aria-live="polite">${S.alert}</span><button data-act="alert" data-v="30" aria-label="30 minutes plus tard">${ic('plus', 'ico-sm')}</button></div></div>
+          ${notifRows()}</div></div>
       <div class="set-block"><div class="set-label">Abonnement</div>
         <div class="box">
           <div class="box-row"><div class="grow"><span class="pill ok"><span class="dot green" style="width:8px;height:8px"></span>Actif — 39 € HT/mois</span>
@@ -1855,6 +1910,8 @@ body[data-view="desk"] .stage { display: none; }
       case 's-ok': scanValidate(); break;
       case 'bilan-detail': bilanDetailSheet(); break;
       case 'mode': S.mode = v; refresh(); toast(v === 'promo' ? 'Mode promo activé' : v === 'rotation' ? 'Mode rotation activé' : 'Promo et rotation activées'); break;
+      case 'notif-enable': enableNotif(); break;
+      case 'notif-test': testNotif(); break;
       case 'alert': {
         const [h, m] = S.alert.split(':').map(Number);
         const t = (h * 60 + m + +v + 1440) % 1440;
@@ -1949,6 +2006,7 @@ body[data-view="desk"] .stage { display: none; }
     if (k === 'product') openProduct((active().find(p => p.d === 1) || active()[0]).id);
   }
 
+  registerSW();
   applyView();
 })();
 </script>
