@@ -2,9 +2,10 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Maquette Frescy</title>
-<meta name="theme-color" content="#1D3FBF">
+<meta name="theme-color" content="#F3F4F7">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Frescy">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -248,7 +249,8 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .group { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; overflow: clip; }
 .swipe { position: relative; overflow: hidden; overflow: clip; transition: height var(--t), opacity var(--t); }
 .swipe + .swipe { border-top: 1px solid var(--line); }
-.swipe-actions { position: absolute; inset: 0 0 0 auto; display: flex; }
+.swipe-actions { position: absolute; inset: 0 0 0 auto; display: flex; visibility: hidden; transition: visibility 0s 220ms; }
+.swipe.on .swipe-actions { visibility: visible; transition: none; }
 .swipe-actions button {
   width: 78px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   font-size: 15px; line-height: 1.1; font-weight: 600; color: #fff; text-align: center; padding: 0 4px;
@@ -323,7 +325,7 @@ button.sec-h { min-height: 48px; width: 100%; text-align: left; }
 .view { position: absolute; inset: 0; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: opacity 140ms, visibility 0s 140ms; }
 .view.on { opacity: 1; visibility: visible; transition: opacity 140ms, visibility 0s; }
 .tabbar { flex: none; height: 76px; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--card); border-top: 1px solid var(--card-line); }
-.tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 15px; font-weight: 600; color: var(--muted); position: relative; }
+.tab { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 12px; gap: 4px; font-size: 15px; font-weight: 600; color: var(--muted); position: relative; }
 .tab .ico { width: 24px; height: 24px; stroke-width: 1.6; }
 .tab.on { color: var(--blue); }
 .tab-photo { color: var(--blue); }
@@ -615,11 +617,24 @@ kbd { font: 600 13px var(--font); border: 1px solid var(--line-strong); border-b
 body[data-view="phone"] .desk { display: none; }
 body[data-view="desk"] .stage { display: none; }
 @media (max-width: 767px) {
+  body { background: var(--bg); }
   .stage { padding: 0; display: block; }
   .device { width: 100%; height: 100%; border: 0; border-radius: 0; box-shadow: none; }
   .app { top: 0; }
   .proto { display: none; }
 }
+/* safe-area:start — site en ligne : encoche et barre d'accueil des iPhone (l'aperçu Claude gère déjà ces marges) */
+@media (max-width: 767px) {
+  .app { top: env(safe-area-inset-top, 0px); }
+  .tabbar { height: calc(76px + env(safe-area-inset-bottom, 0px)); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .p-actions { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .ssheet, .sheet { padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
+  .manual { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .toast { bottom: calc(88px + env(safe-area-inset-bottom, 0px)); }
+  .app.on-product .toast { bottom: calc(108px + env(safe-area-inset-bottom, 0px)); }
+  .app.on-settings .toast { bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+}
+/* safe-area:end */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; animation-iteration-count: 1 !important; }
 }
@@ -1218,7 +1233,7 @@ body[data-view="desk"] .stage { display: none; }
   /* Glisser une ligne */
   const ACT_W = 312;
   let drag = null, openRow = null;
-  const setX = (row, x) => { row.style.transform = x ? `translateX(${x}px)` : ''; };
+  const setX = (row, x) => { row.style.transform = x ? `translateX(${x}px)` : ''; row.parentElement.classList.toggle('on', !!x); };
   const closeOpen = () => { if (openRow) { setX(openRow, 0); openRow = null; } };
   const home = $('#L-main .views');
   home.addEventListener('pointerdown', e => {
